@@ -3,7 +3,7 @@
   <channel>
     <title>Gavin Droider</title>
     <link>http://gavin1989.github.io</link>
-    <pubDate>2013-05-10 03:03:42 +0800</pubDate>
+    <pubDate>2013-05-10 03:52:25 +0800</pubDate>
     <item>
       <title>Android中view的Touch事件传递顺序</title>
       <link>http://gavin1989.github.io/Android/Android%E4%B8%ADview%E7%9A%84Touch%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92%E9%A1%BA%E5%BA%8F/</link>
@@ -90,9 +90,9 @@ OK，再看这段代码：
         return true;
     }&lt;/pre&gt;
 从这段代码可以看出，如果某个子控件的dispatchTouchEvent方法返回true，则中断以后的消息传递。并在下一个非ACTION_DOWN事件直接调用此子控件的dispatchTouchEvent方法。一个View的dispatchTouchEvent返回true，主要可能是onTouch方法返回true。如果我们把MyImageView的onTouchEvent返回值改为true：
-&lt;pre&gt;I/MyScrollView(26393): onInterceptTouchEvent:MotionEvent{&amp;hellip;}&lt;br /&gt;
-/MyLinearLayout(26393): onInterceptTouchEvent:MotionEvent{&amp;hellip;}
-I/MyImageView(26393): onTouchEvent:MotionEvent{&amp;hellip;}&lt;/pre&gt;&lt;/p&gt;
+&lt;pre&gt;MyScrollView(26393): onInterceptTouchEvent:MotionEvent{&amp;hellip;}
+MyLinearLayout(26393): onInterceptTouchEvent:MotionEvent{&amp;hellip;}
+MyImageView(26393): onTouchEvent:MotionEvent{&amp;hellip;}&lt;/pre&gt;&lt;/p&gt;
 </description>
     </item>
     <item>

@@ -165,9 +165,9 @@ OK，再看这段代码：
         return true;
     }</pre>
 从这段代码可以看出，如果某个子控件的dispatchTouchEvent方法返回true，则中断以后的消息传递。并在下一个非ACTION_DOWN事件直接调用此子控件的dispatchTouchEvent方法。一个View的dispatchTouchEvent返回true，主要可能是onTouch方法返回true。如果我们把MyImageView的onTouchEvent返回值改为true：
-<pre>I/MyScrollView(26393): onInterceptTouchEvent:MotionEvent{&hellip;}<br />
-/MyLinearLayout(26393): onInterceptTouchEvent:MotionEvent{&hellip;}
-I/MyImageView(26393): onTouchEvent:MotionEvent{&hellip;}</pre></p>
+<pre>MyScrollView(26393): onInterceptTouchEvent:MotionEvent{&hellip;}
+MyLinearLayout(26393): onInterceptTouchEvent:MotionEvent{&hellip;}
+MyImageView(26393): onTouchEvent:MotionEvent{&hellip;}</pre></p>
 
     <hr>
     <div class="pagination">
