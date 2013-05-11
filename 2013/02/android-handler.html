@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>首页</title>
+    <title>Android之Handler</title>
   
     <meta name="author" content="Gao Xu">
 
@@ -77,28 +77,13 @@
     <div class="container">
 
       <div class="content">
-        
-<div class="page-header">
-  <h1>首页 </h1>
+        <div class="page-header">
+  <h1>Android之Handler </h1>
 </div>
 
 <div class="row">
-  <div class="span12">
-    
-<h2>Gor已经为了编译成功了</h2>
-<p>
-  这段文字位于pages/index.html ,使用以下命令获取帮助或访问gor官网
-</p>
-<pre><code>$ gor help</code></pre>
-
-
-<h2>最近更新</h2>
-
-
-<div class="post">
-  <h3 class="title"><a href="/2013/02/android-handler.html">Android之Handler</a> <span class="date">2013-02-28</span></h3>
-
-  <p>Handler：Handler允许你发送并且处理和线程消息队列相关的消息（Message）和可运行对象。每个Handler实例都有一个单独的相关线程和这个线程的消息队列。当你创建一个新的Handler时候，它将和创建者所在线程以及此线程的消息队列绑定。从这一刻起，它将传递消息和可运行对象到消息队列，并在消息和可运行对象被传出消息队列时执行它们。<br />
+  <div class="span8">
+    <p>Handler：Handler允许你发送并且处理和线程消息队列相关的消息（Message）和可运行对象。每个Handler实例都有一个单独的相关线程和这个线程的消息队列。当你创建一个新的Handler时候，它将和创建者所在线程以及此线程的消息队列绑定。从这一刻起，它将传递消息和可运行对象到消息队列，并在消息和可运行对象被传出消息队列时执行它们。<br />
 Handler主要有两种用途：</p>
 
 <ol>
@@ -189,71 +174,79 @@ send系列方法，包装的都是sendMessageAtTime方法（sendMessageAtFrontOf
 第二个mCallback.handleMessage方法，可以让你避免在自己的Handler子类中重写handleMessage方法。<br />
 还有remove系列方法，就是根据条件从消息队列中移除相关的Message。</p>
 
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+          
+            <li class="prev disabled"><a>&larr; Previous</a></li>
+          
 
-  <div class="more">
-    <a href="/2013/02/android-handler.html" class="btn">read more..</a>
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/2013/02/how-are-android-touch-events-delivered.html" title="Android中view的Touch事件传递顺序">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
   </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/2013/02/how-are-android-touch-events-delivered.html">Android中view的Touch事件传递顺序</a> <span class="date">2013-02-27</span></h3>
-
-  <p>先看一下ViewGroup的dispatchTouchEvent的关键源码：
-<pre>public boolean dispatchTouchEvent(MotionEvent ev) {
-    &hellip;
-    if (action == MotionEvent.ACTION_DOWN) {
-        &hellip;
-        if (disallowIntercept || !onInterceptTouchEvent(ev)) {
-            final View[] children = mChildren;
-            final int count = mChildrenCount;
-            for (int i = count - 1; i &gt;= 0; i&ndash;) {
-                final View child = children[i];
-                if ((child.mViewFlags &amp; VISIBILITY_MASK) == VISIBLE
-                        || child.getAnimation() != null) {
-                    &hellip;
-                    if (child.dispatchTouchEvent(ev))  {
-                        // Event handled, we have a target now.
-                        mMotionTarget = child;
-                        return true;
-                    }
-                }
-            }
-        }
-    }
-    &hellip;
-    final View target = mMotionTarget;
-    if (target == null) {
-        &hellip;
-        return super.dispatchTouchEvent(ev);
-    }
-    if (!disallowIntercept &amp;&amp; onInterceptTouchEvent(ev)) {
-        &hellip;
-        if (!target.dispatchTouchEvent(ev)) {
-            // target didn&rsquo;t handle ACTION_CANCEL. not much we can do
-            // but they should have.
-        }
-        // clear the target
-        mMotionTarget = null;
-        // Don&rsquo;t dispatch this event to our own view, because we already
-        // saw it when intercepting; we just want to give the following
-        // event to the normal onTouchEvent().
-        return true;
-    }
-    &hellip;
-    return target.dispatchTouchEvent(ev);
-}</pre>
-根据以上代码可知，如果onInterceptTouchEvent方法返回true，会直接调用当前ViewGroup的onTouch方法，否则则会依次调用其内包含的子控件的dispatchTouchEvent方法。我写了一个测试用例，ViewGroup的onInterceptTouchEvent方法与所有View的onTouch方法都打了Log：
-<pre>&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;utf-8&rdquo;?&gt;
-&lt;org.gavin.test.view.MyScrollView xmlns:android=&ldquo;http://schemas.android.com/apk/res/android&rdquo;
-    android:layout_width=&ldquo;fill_parent&rdquo;
-    android:layout_height=&ldquo;fill_parent&rdquo; &gt;</p>
-
-
-  <div class="more">
-    <a href="/2013/02/how-are-android-touch-events-delivered.html" class="btn">read more..</a>
-  </div>
-</div>
-
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2013-02-28</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#Android-ref">Android <span>2</span></a>
+</li>
+    
+      <li>
+  <a href="/categories/#%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-ref">源码分析 <span>2</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/tags/#Android-ref">Android <span>2</span></a>
+</li>
+    
+      <li>
+  <a href="/tags/#Handler-ref">Handler <span>1</span></a>
+</li>
+    
+      <li>
+  <a href="/tags/#Looper-ref">Looper <span>1</span></a>
+</li>
+    
+      <li>
+  <a href="/tags/#Message-ref">Message <span>1</span></a>
+</li>
+    
+    </ul>
   </div>
 </div>
 
