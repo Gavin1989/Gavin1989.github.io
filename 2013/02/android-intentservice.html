@@ -97,25 +97,23 @@
 public void onCreate() {
     super.onCreate();
     HandlerThread thread = new HandlerThread(&ldquo;IntentService[&rdquo; + mName + &ldquo;]&rdquo;);
-    thread.start();</p>
+    thread.start();
 
-<pre><code>mServiceLooper = thread.getLooper();
+    mServiceLooper = thread.getLooper();
 mServiceHandler = new ServiceHandler(mServiceLooper);
-</code></pre>
 
 <p>}</pre>
 其中的ServiceHandler是IntentService类的内部类：
 <pre>private final class ServiceHandler extends Handler {
     public ServiceHandler(Looper looper) {
         super(looper);
-    }</p>
+    }
 
-<pre><code>@Override
+@Override
 public void handleMessage(Message msg) {
     onHandleIntent((Intent)msg.obj);
     stopSelf(msg.arg1);
 }
-</code></pre>
 
 <p>}</pre>
 在onCreate方法里，创建并启动了一条工作线程。然后使用工作线程的Looper构造了一个Handler，这个Handler将循环处理请求。<br />
