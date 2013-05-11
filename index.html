@@ -96,6 +96,42 @@
 
 
 <div class="post">
+  <h3 class="title"><a href="/2013/02/android-intentservice.html">android之intentservice</a> <span class="date">2013-02-28 14:10:33</span></h3>
+
+  <p>IntentService是一种用于处理异步请求（表现为Intent）的服务基类。客户通过调用Context.startService(Intent)发送请求；根据需要启动服务，依次使用工作者线程处理每一个Intent，并且在工作完成后终止自身。<br />
+这种“工作队列处理器”模式通常被用来从一个应用程序的主线程卸载任务。IntentService类的存在是为了简化这种模式，并且照顾了技术性的部分。要使用它，需要继承IntentService类并且实现onHandleIntent(Intent)方法。IntentService将会接收到这些Intent，运行一条工作者线程，并且在适当的时候停止服务。<br />
+所有的请求都是在一个单一的工作者线程中处理的，尽管处理过程可能需要很长时间（不会阻塞应用程序的主线程），但是每次只能有一个请求会被处理。<br />
+首先，看它提供的一个构造方法：
+<pre>public IntentService(String name) {
+    super();
+    mName = name;
+}</pre>
+参数name被用于命名即将用到的工作者线程，它的重要性仅用于调试。这里需要注意的一点是，Service的实例化是系统来完成的，并且系统是用无参的构造方法来实例化Service的。所以，你的子类必须是无参的，然后在无参构造方法里调用super(&ldquo;name&rdquo;)。<br />
+再看onCreate方法：
+<pre>@Override
+public void onCreate() {
+    super.onCreate();
+    HandlerThread thread = new HandlerThread(&ldquo;IntentService[&rdquo; + mName + &ldquo;]&rdquo;);
+    thread.start();</p>
+
+<pre><code>mServiceLooper = thread.getLooper();
+mServiceHandler = new ServiceHandler(mServiceLooper);
+</code></pre>
+
+<p>}</pre>
+其中的ServiceHandler是IntentService类的内部类：
+<pre>private final class ServiceHandler extends Handler {
+    public ServiceHandler(Looper looper) {
+        super(looper);
+    }</p>
+
+
+  <div class="more">
+    <a href="/2013/02/android-intentservice.html" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
   <h3 class="title"><a href="/2013/02/android-handler.html">Android之Handler</a> <span class="date">2013-02-28</span></h3>
 
   <p>Handler：Handler允许你发送并且处理和线程消息队列相关的消息（Message）和可运行对象。每个Handler实例都有一个单独的相关线程和这个线程的消息队列。当你创建一个新的Handler时候，它将和创建者所在线程以及此线程的消息队列绑定。从这一刻起，它将传递消息和可运行对象到消息队列，并在消息和可运行对象被传出消息队列时执行它们。<br />
