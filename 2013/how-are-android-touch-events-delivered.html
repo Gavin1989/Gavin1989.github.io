@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>首页</title>
+    <title>Android中view的Touch事件传递顺序</title>
   
     <meta name="author" content="Gao Xu">
 
@@ -77,28 +77,13 @@
     <div class="container">
 
       <div class="content">
-        
-<div class="page-header">
-  <h1>首页 </h1>
+        <div class="page-header">
+  <h1>Android中view的Touch事件传递顺序 </h1>
 </div>
 
 <div class="row">
-  <div class="span12">
-    
-<h2>Gor已经为了编译成功了</h2>
-<p>
-  这段文字位于pages/index.html ,使用以下命令获取帮助或访问gor官网
-</p>
-<pre><code>$ gor help</code></pre>
-
-
-<h2>最近更新</h2>
-
-
-<div class="post">
-  <h3 class="title"><a href="/2013/how-are-android-touch-events-delivered.html">Android中view的Touch事件传递顺序</a> <span class="date">2013-02-27</span></h3>
-
-  <p>先看一下ViewGroup的dispatchTouchEvent的关键源码：
+  <div class="span8">
+    <p>先看一下ViewGroup的dispatchTouchEvent的关键源码：
 <pre>    public boolean dispatchTouchEvent(MotionEvent ev) {
         &hellip;
         if (action == MotionEvent.ACTION_DOWN) {
@@ -148,12 +133,110 @@
         android:layout_width=&ldquo;fill_parent&rdquo;
         android:layout_height=&ldquo;fill_parent&rdquo; &gt;</p>
 
+<pre><code>    &amp;lt;org.gavin.test.view.MyLinearLayout
+        android:layout_width=&quot;fill_parent&quot;
+        android:layout_height=&quot;fill_parent&quot;
+        android:orientation=&quot;vertical&quot;&gt;
+        &amp;lt;org.gavin.test.view.MyImageView
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:src=&quot;@drawable/ic_launcher&quot;&gt;
+        &amp;lt;/org.gavin.test.view.MyImageView&gt;
+    &amp;lt;/org.gavin.test.view.MyLinearLayout&gt;
+&amp;lt;/org.gavin.test.view.MyScrollView&gt;&lt;/pre&gt;
+</code></pre>
 
-  <div class="more">
-    <a href="/2013/how-are-android-touch-events-delivered.html" class="btn">read more..</a>
+<p>Log信息：
+<pre>    I/MyScrollView(26001)::onInterceptTouchEvent:MotionEvent{&hellip;}
+    I/MyLinearLayout(26001): onInterceptTouchEvent:MotionEvent{&hellip;}
+    I/MyImageView(26001): onTouchEvent:MotionEvent{&hellip;}
+    I/MyLinearLayout(26001): onTouchEvent:MotionEvent{&hellip;}
+    I/MyScrollView(26001): onTouchEvent:MotionEvent{&hellip;}</pre>
+如果MyLinearLayout的onInterceptTouchEvent方法返回true：
+<pre>    11-04 14:05:08.389: I/MyScrollView(26297): onInterceptTouchEvent:MotionEvent{&hellip;}
+    11-04 14:05:08.389: I/MyLinearLayout(26297):onInterceptTouchEvent:MotionEvent{&hellip;}
+    11-04 14:05:08.397: I/MyLinearLayout(26297): onTouchEvent:MotionEvent{&hellip;}
+    11-04 14:05:08.397: I/MyScrollView(26297): onTouchEvent:MotionEvent{&hellip;}</pre>
+OK，再看这段代码：
+<pre>    if (child.dispatchTouchEvent(ev))  {
+        // Event handled, we have a target now.
+        mMotionTarget = child;
+        return true;
+    }</pre>
+从这段代码可以看出，如果某个子控件的dispatchTouchEvent方法返回true，则中断以后的消息传递。并在下一个非ACTION_DOWN事件直接调用此子控件的dispatchTouchEvent方法。一个View的dispatchTouchEvent返回true，主要可能是onTouch方法返回true。如果我们把MyImageView的onTouchEvent返回值改为true：
+<pre>    I/MyScrollView(26393): onInterceptTouchEvent:MotionEvent{&hellip;}
+    I/MyLinearLayout(26393): onInterceptTouchEvent:MotionEvent{&hellip;}
+    I/MyImageView(26393): onTouchEvent:MotionEvent{&hellip;}</pre></p>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+          
+            <li class="prev disabled"><a>&larr; Previous</a></li>
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+          
+            <li class="next disabled"><a>Next &rarr;</a>
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
   </div>
-</div>
-
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2013-02-27</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#Android-ref">Android <span>1</span></a>
+</li>
+    
+      <li>
+  <a href="/categories/#%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-ref">源码分析 <span>1</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/tags/#Android-ref">Android <span>1</span></a>
+</li>
+    
+      <li>
+  <a href="/tags/#onTouch%E4%BA%8B%E4%BB%B6-ref">onTouch事件 <span>1</span></a>
+</li>
+    
+      <li>
+  <a href="/tags/#view-ref">view <span>1</span></a>
+</li>
+    
+    </ul>
   </div>
 </div>
 
