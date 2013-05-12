@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Go语言之旅——方法与接口</title>
+  
+    <meta name="author" content="Gao Xu">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css" type="text/css" rel="stylesheet" media="all">
+ 
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">Gavin Droider</a>
+          <ul class="nav">
+            
+              
+
+
+  <li><a href="/archive">Archive</a></li>
+
+
+            
+              
+
+
+  <li><a href="/tags">Tags</a></li>
+
+
+            
+              
+
+
+  <li><a href="/categories">Categories</a></li>
+
+
+            
+              
+
+
+  <li><a href="/pages">Pages</a></li>
+
+
+            
+              
+
+
+  <li><a href="/about">About Me</a></li>
+
+
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+  <h1>Go语言之旅——方法与接口 </h1>
+</div>
+
+<div class="row">
+  <div class="span8">
+    <p>##方法
+Go中没有类。但是，可以在结构体类型上定义方法。方法接收者出现在func关键字与方法名之间的参数中。
+<pre><code>package main</p>
+
+<p>import (
+    &ldquo;fmt&rdquo;
+    &ldquo;math&rdquo;
+)</p>
+
+<p>type Vertex struct {
+    X, Y float64
+}</p>
+
+<p>func (v *Vertex) Abs() float64 {
+    return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}</p>
+
+<p>func main() {
+    v := &amp;Vertex{3, 4}
+    fmt.Println(v.Abs())
+}</code></pre>
+可以对包中的任意类型定义方法，而不只是结构体。但是，不能对来自于其它包的类型和基本类型定义方法。
+<pre><code>package main</p>
+
+<p>import (
+    &ldquo;fmt&rdquo;
+    &ldquo;math&rdquo;
+)</p>
+
+<p>type MyFloat float64</p>
+
+<p>func (f MyFloat) Abs() float64 {
+    if f &lt; 0 {
+        return float64(-f)
+    }
+    return float64(f)
+}</p>
+
+<p>func main() {
+    f := MyFloat(-math.Sqrt2)
+    fmt.Println(f.Abs())
+}</code></pre>
+方法可以与命名类型或命名类型的指针相关联。只看两个Abs方法，下面例子中方法的接收者为*Vertex指针类型，而上面例子中为MyFloat值类型）。<br />
+使用指针接收者有两个原因：首先，避免在每一次方法调用上复制值（当值类型是非常大的结构体时更有效率）；其次，方法可以修改接收者指向的值。<br />
+尝试改变下例中Abs和Scale方法的声明，使用Vertex代替*Vertex为接收者。你将看到：当v为Vertex时，Scale方法没有任何效果，当v是一个值（非指针）类型时，这个方法复制了一个Vertex类型的值，所以它无法修改原始值；Abs方法可以正常工作，它仅仅是读取了v的值，无论是通过复制的值还是原始值（通过指针）都没有关系。
+<pre><code>package main</p>
+
+<p>import (
+    &ldquo;fmt&rdquo;
+    &ldquo;math&rdquo;
+)</p>
+
+<p>type Vertex struct {
+    X, Y float64
+}</p>
+
+<p>func (v *Vertex) Scale(f float64) {
+    v.X = v.X * f
+    v.Y = v.Y * f
+}</p>
+
+<p>func (v *Vertex) Abs() float64 {
+    return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}</p>
+
+<p>func main() {
+    v := &amp;Vertex{3, 4}
+    v.Scale(5)
+    fmt.Println(v, v.Abs())
+}</code></pre>
+##接口
+接口类型用来描述一组方法的集合。接口类型的值可以存放任意实现这些方法的值。
+<pre><code>package main</p>
+
+<p>import (
+    &ldquo;fmt&rdquo;
+    &ldquo;math&rdquo;
+)</p>
+
+<p>type Abser interface {
+    Abs() float64
+}</p>
+
+<p>func main() {
+    var a Abser
+    f := MyFloat(-math.Sqrt2)
+    v := Vertex{3, 4}</p>
+
+<pre><code>a =f // a MyFloat implements Abser
+a = &amp;v // a *Vertex implements Abser
+//a = v // a Vertex, does NOT implements Abser
+
+fmt.Println(a.Abs())
+</code></pre>
+
+<p>}</p>
+
+<p>type MyFloat float64</p>
+
+<p>func (f MyFloat) Abs() float64 {
+    if f &lt; 0 {
+        return float64(-f)
+    }
+    return float64(f)
+}</p>
+
+<p>type Vertex struct {
+    X, Y float64
+}</p>
+
+<p>func (v *Vertex) Abs() float64 {
+    return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}</code></pre>
+类型通过实现方法来实现一个接口，因此也就没有显式声明的必要。
+隐式接口分离了实现的包与定义接口的包：即二者互不依赖。它还鼓励明确的接口定义，因此不必通过一个新的接口名查找所有实现和标签。
+下例中，由于包io下已经定义了Reader和Writer接口，所以这里你不必如此：
+<pre><code>package main</p>
+
+<p>import (
+    &ldquo;fmt&rdquo;
+    &ldquo;os&rdquo;
+)</p>
+
+<p>type Reader interface {
+    Read(b []byte) (n int, err error)
+}</p>
+
+<p>type Writer interface {
+    Write(b []byte) (n int, err error)
+}</p>
+
+<p>type ReadWriter interface {
+    Reader
+    Writer
+}</p>
+
+<p>func main() {
+    var w Writer</p>
+
+<pre><code>// os.Stdout implements Writer
+w = os.Stdout
+
+fmt.Fprintf(w, &quot;hello, writer\n&quot;)
+</code></pre>
+
+<p>}</code></pre>
+##错误
+错误可以是任意能用一个错误字符串描述自身的东西。思路是通过捕获内建的预定义error接口类型，这个接口只有一个返回一个字符串的方法：Error。
+<pre><code>type error interface {
+    Error() string
+}</code></pre>
+当用fmt包的各种打印方法打印error时，会自动调用这个方法：<br />
+<pre><code>package main</p>
+
+<p>import (
+    &ldquo;fmt&rdquo;
+    &ldquo;time&rdquo;
+)</p>
+
+<p>type MyError struct {
+    When time.Time
+    What string
+}</p>
+
+<p>func (e *MyError) Error() string {
+    return fmt.Sprintf(&ldquo;at %v, %s&rdquo;, e.When, e.What)
+}</p>
+
+<p>func run() error {
+    return &amp;MyError {
+        time.Now(),
+        &ldquo;it didn&rsquo;t work&rdquo;,
+    }
+}</p>
+
+<p>func main() {
+    if err := run(); err != nil {
+        fmt.Println(err)
+    }
+}</code></pre>
+##Web server
+http包可以使用任意实现了http.Handler接口的值来处理HTTP请求。
+<pre><code>package http</p>
+
+<p>type Handler interface {
+    ServeHTTP(w ResponseWriter, r *Request)
+}</code></pre>
+在下面的例子中，Hello类型实现了http.Handler接口。访问http://localhost:4000会看到程序给出的问候。<br />
+<pre><code>package main</p>
+
+<p>import (
+    &ldquo;fmt&rdquo;
+    &ldquo;net/http&rdquo;
+)</p>
+
+<p>type Hello struct {}</p>
+
+<p>func (h Hello) ServeHTTP(
+    w http.ResponseWriter,
+    r *http.Request) {
+        fmt.Fprint(w, &ldquo;Hello!&rdquo;)
+    }</p>
+
+<p>func main() {
+    var h Hello
+    http.ListenAndServe(&ldquo;localhost:4000&rdquo;, h)
+}</code></pre>
+处理你web服务器上指定的路径。<br />
+<pre><code>package main</p>
+
+<p>import (
+    &ldquo;net/http&rdquo;
+    &ldquo;fmt&rdquo;
+)</p>
+
+<p>type String string
+type Struct struct {
+    Greeting string
+    Punct string
+    Who string
+}</p>
+
+<p>func (s String) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprint(w, s)
+}</p>
+
+<p>func (s *Struct) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprint(w, s)
+}</p>
+
+<p>func main() {
+    // your http.Handle calls here
+    http.Handle(&ldquo;/string&rdquo;, String(&ldquo;I&rsquo;m a frayed knot.&rdquo;))
+    http.Handle(&ldquo;/struct&rdquo;, &amp;Struct{&ldquo;Hello&rdquo;, &ldquo;:&ldquo;, &ldquo;Gophers!&rdquo;})
+    http.ListenAndServe(&ldquo;localhost:4000&rdquo;, nil)
+}</code></pre>
+##图像
+image包中定义了Image接口：<br />
+<pre><code>package image</p>
+
+<p>type Image interface {
+    ColorModel() color.Model
+    Bounds() Rectangle
+    At(x, y int) color.Color
+}</code></pre>
+其中color.Color和color.Model都是接口，但是这里将不使用它们，而是用内建的实现color.RGBA和color.RGBAModel。<br />
+<pre><code>package main</p>
+
+<p>import (
+    &ldquo;fmt&rdquo;
+    &ldquo;image&rdquo;
+)</p>
+
+<p>func main() {
+    m := image.NewRGBA(image.Rect(0, 0, 100, 100))
+    fmt.Println(m.Bounds())
+    fmt.Println(m.At(0, 0).RGBA())
+}</code></pre></p>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/2013/04/golang-fibonacci.html" title="Go——斐波那契数列">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/2013/04/golang-tour-2.html" title="Go语言之旅——基本概念（二）">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2013-04-17 16:51:51</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#Go-ref">Go <span>17</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/tags/#Go-ref">Go <span>16</span></a>
+</li>
+    
+    </ul>
+  </div>
+</div>
+
+      </div>
+
+      <footer>
+        <p>&copy; Gao Xu 2013 
+          with help from <a href="http://github.com/wendal/gor" target="_blank" title="Gor -- Fast Blog">Gor</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+		  and Idea from <a href="http://ruhoh.com" target="_blank" title="The Definitive Technical Blogging Framework">ruhoh</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+<script>
+  var pres = document.getElementsByTagName("pre");
+  for (var i=0; i < pres.length; ++i) {
+    pres[i].className = "prettyprint linenums";
+  }
+  prettyPrint();
+</script>
+
+    
+<script>
+    var _gaq=[['_setAccount','UA-123-12'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+  </body>
+</html>

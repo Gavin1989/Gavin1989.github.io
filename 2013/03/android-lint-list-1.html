@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>首页</title>
+    <title>android工具之lint检测列表(一)</title>
   
     <meta name="author" content="Gao Xu">
 
@@ -77,129 +77,13 @@
     <div class="container">
 
       <div class="content">
-        
-<div class="page-header">
-  <h1>首页 </h1>
+        <div class="page-header">
+  <h1>android工具之lint检测列表(一) </h1>
 </div>
 
 <div class="row">
-  <div class="span12">
-    
-<h2>Gor已经为了编译成功了</h2>
-<p>
-  这段文字位于pages/index.html ,使用以下命令获取帮助或访问gor官网
-</p>
-<pre><code>$ gor help</code></pre>
-
-
-<h2>最近更新</h2>
-
-
-<div class="post">
-  <h3 class="title"><a href="/2013/04/gavin-s-ndk.html">新篇章——NDK</a> <span class="date">2013-05-12</span></h3>
-
-  <p><a href="http://developer.android.com/tools/sdk/ndk/index.html">NDK</a>是从Android 1.5开始支持的，它是一系列工具的集合。它集成了交叉编译器，开发者只需要创建一个mk文件即可生成.so文件，而不用考虑如CPU、ABI、platform等。总而言之，NDK简化了JNI开发的过程。<br />
-开发环境：Windows64+eclipse4.2+ADT21+CDT+NDKr8e+Cygwin<br />
-首先，NDK使用起来还是挺方便的。首先，Java类中定义public native方法：
-<pre><code>public native String stringFromJNI</code></pre>
-在使用这个本地方法之前，还需要加载库：
-<pre><code>static {
-    System.loadLibrary(&ldquo;hellojni&rdquo;)
-}</code></pre>
-这样，Java部分就已经定义好了。<br />
-要开始着手写c部分，首先要了解c中函数与Java方法的对应关系。例如上面的stringFromJNI方法，它在org.gaoxu.example.ndkdemo包下的MainActivity类，它对应的c函数名就应该为：
-<pre><code>Java_org_gaoxu_example_ndkdemo_MainActivity_stringFromJNI(JNIEnv* env, jobject thiz)</code></pre>
-这个函数的第二个参数先不管，第一个参数为JNIEnv指针类型，它指向了一个可执行的函数表，即可以使用它调用某个函数。实现这个方法的代码（这个文件放在工程根目录的jni目录下，记得必须声明jni.h头文件）：
-<pre><code>#include <string.h>
-#include <jni.h></p>
-
-<p>jstring Java_org_gaoxu_example_ndkdemo_MainActivity_stringFromJNI(JNIEnv* env, jobject thiz) {
-    return (*env)-&gt;NewStringUTF(env, &ldquo;Hello Gavin!&rdquo;);
-}</code></pre>
-文件名为hellojni.c。<br />
-现在，还需要写一个Makefile，命名为Android.mk:
-<pre><code>LOCAL_PATH := $(call my-dir)</p>
-
-
-  <div class="more">
-    <a href="/2013/04/gavin-s-ndk.html" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/2013/04/revel-concepts.html">Revel框架——基本概念</a> <span class="date">2013-05-12</span></h3>
-
-  <p>##概念
-Revel依赖于约定，即在应用中规定一个明确的架构，这使你用MVC模式构建web应用变得简单。作为回报，它的结构非常轻量级，并且开发周期非常快。
-##MVC
-快速总结：</p>
-
-<ul>
-<li>Model是描述应用域的重要数据对象，它也封装了指定域查询和更新数据的逻辑。</li>
-<li>View描述了数据怎么呈现以及操作。在revel中，使用模板（template）来呈现数据以及引导用户。</li>
-<li>Controller处理请求。它们执行用户期待的动作，并决定要显示哪个view，以及准备和提供view渲染必需的数据。</li>
-</ul>
-
-<p>网上有很多优秀的MVC架构的概述，尤其是Play！Framework，revel的思路完全来源于Play!Framework。
-##Goroutine每一个请求
-Revel构建于Go HTTP Server之上，它为每一个到来的请求都创建一个goroutine（轻量级的线程）来进行处理。它的含义是你的代码可以自由地阻塞，但是必须能够处理并发的请求进程。
-##Controllers和Actions
-一个HTTP请求调用一个action，action处理请求并且将结果写入到响应中。相关的action组成了controllers。</p>
-
-<hr />
-
-<p>Controller可以是嵌入*revel.Controller为第一个字段的任意类型。<br />
-例如：<br />
-<pre><code>type AppController struct {
-    *revel.Controller
-}</code></pre>
-revel.Controller是请求的上下文（Context）。它包含了请求和响应的数据。下面是它及其辅助类型的定义，详情请参阅<a href="http://robfig.github.io/revel/docs/godoc/controller.html#Controller">godoc</a>：
-<pre><code>type Controller struct {
-    Name          string          // controller的名字, 例如：&rdquo;Application&rdquo;
-    Type          *ControllerType // controller类型的描述
-    MethodType    *MethodType     // 调用的action类型的描述
-    AppController interface{}     // 实例化的controller</p>
-
-
-  <div class="more">
-    <a href="/2013/04/revel-concepts.html" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/2013/04/golang-tour-concurrent.html">Go语言之旅——并发</a> <span class="date">2013-05-11</span></h3>
-
-  <p>##Goroutine
-goroutine是由Go运行时管理的轻量级线程。表达式<br />
-<pre><code>go f(x, y, z)</code></pre>
-会在一个新的goroutine中执行<br />
-<pre><code>f(x, y, z)</code></pre>
-其中f、x、y、z是在当前goroutine中赋值的，并且f的执行是在新的goroutine中进行的。<br />
-goroutine在同一个地址空间中运行，因此访问共享内存时必须同步。sync包提供了这种功能，但是在Go中这种方法并不常用（接下来会看到）
-<pre><code>package main</p>
-
-<p>import (
-    &ldquo;fmt&rdquo;
-    &ldquo;time&rdquo;
-)</p>
-
-<p>func say(s string) {
-    for i := 0; i &lt; 5; i++ {
-        time.Sleep(100 * time.Millisecond)
-        fmt.Println(s)
-    }
-}</p>
-
-
-  <div class="more">
-    <a href="/2013/04/golang-tour-concurrent.html" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/2013/03/android-lint-list-1.html">android工具之lint检测列表(一)</a> <span class="date">2013-05-11</span></h3>
-
-  <p>#Available issues:
+  <div class="span8">
+    <p>#Available issues:
 ##Correctness</p>
 
 <h2>###AdapterViewChildren</h2>
@@ -858,296 +742,67 @@ Category: Correctness<br />
 For performance reasons and to keep the code simpler, the Android system uses pixels as the standard unit for expressing dimension or coordinate values.That means that the dimensions of a view are always expressed in the code using pixels, but always based on the current screen density. For instance, if myView.getWidth() returns 10, the view is 10 pixels wide on the current screen, but on a device with a higher density screen, the value returned might be 15. If you use pixel values in your application code to work with bitmaps that are not pre-scaled for the current screen density, you might need to scale the pixel values that you use in your code to match the un-scaled bitmap source.<br />
 More information: <a href="http://developer.android.com/guide/practices/screens_support.html#screen-independence">http://developer.android.com/guide/practices/screens_support.html#screen-independence</a></p>
 
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/2013/04/golang-tour-concurrent.html" title="Go语言之旅——并发">&larr; Previous</a></li>
+          
+          
 
-  <div class="more">
-    <a href="/2013/03/android-lint-list-1.html" class="btn">read more..</a>
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/2013/05/revel-interceptors.html" title="Revel框架之拦截器">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
   </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/2013/05/revel-interceptors.html">Revel框架之拦截器</a> <span class="date">2013-05-08 15:16:51</span></h3>
-
-  <h2><a style="display: block;" name="拦截器" href="#拦截器"></a>拦截器</h2>
-
-<p>拦截器是在一个Action实施之前或之后由框架调用的一个函数。它允许一种面向方面编程的形式，这对一些常见的问题非常有用：</p>
-
-<ul>
-<li>请求记录</li>
-<li>错误处理</li>
-<li>状态保持</li>
-</ul>
-
-<p>在Revel中，一个拦截器可以有下面两种形式之一：</p>
-
-<ol>
-<li>功能拦截器：一个匹配InterceptorFunc接口的函数。
-
-<ul>
-<li>无法访问特殊的应用Controller调用。</li>
-<li>可以施加到应用中任意/所有的Controller。</li>
-</ul></li>
-<li>方法拦截器：不接受参数的Controller方法，并且返回一个revel.Result。
-
-<ul>
-<li>只能拦截绑定的Controller的调用。</li>
-<li>可以随意修改调用的Controller。</li>
-</ul></li>
-</ol>
-
-<p>拦截器以被添加的顺序调用。</p>
-
-<h2><a style="display: block;" name="拦截时间" href="#拦截时间"></a>拦截时间</h2>
-
-<p>一个拦截器可以在请求生命周期的四个时间点上注册并运行：</p>
-
-
-  <div class="more">
-    <a href="/2013/05/revel-interceptors.html" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/2013/05/revel-templates.html">Revel框架之模版（Template）</a> <span class="date">2013-05-08 14:28:13</span></h3>
-
-  <h2><a style="display: block;" name="模版" href="#模版"></a>模版</h2>
-
-<p>Revel使用<a href="http://www.golang.org/pkg/text/template/">Go模版</a>，它从两个目录搜索模版：</p>
-
-<ul>
-<li>应用的views目录（以及所有的子文件夹）。</li>
-<li>Revel自己的templates目录。</li>
-</ul>
-
-<p>Revel提供了错误页面的模版（在开发模式下显示友好的编译错误），不过应用需要创建一个同名的模版来重写它们，比如app/views/errors/500.html。</p>
-
-<h2><a style="display: block;" name="render-context" href="#render-context"></a>Render Context</h2>
-
-<p>Revel使用RenderArgs数据映射表来执行模版。除应用提供的数据以外，Revel还提供以下两项：</p>
-
-<ul>
-<li>“errors”——通过<a href="http://robfig.github.io/revel/docs/godoc/validation.html#Validation.ErrorMap">Validation.ErrorMap</a>返回的map。</li>
-
-<li><p>“flash”——通过之前的请求闪存的数据。</p>
-
-<h2><a style="display: block;" name="模版函数" href="#模版函数"></a>模版函数</h2>
-
-<p>Go提供<a href="http://www.golang.org/pkg/text/template/#Functions">一些在你的模版中使用的函数</a>。Revel增加了一些。阅读下面的文档，或者<a href="http://robfig.github.io/revel/docs/godoc/template.html#variables">查看它们的源代码</a>。</p>
-
-<h3>eq</h3>
-
-<p>简单地测试“a == b”。<br />
-示例：<br />
-<pre><code>&lt;div class=&ldquo;message you&rdquo;&gt;</code></pre></p>
-
-<h3>set</h3>
-
-<p>在给定的Context中设置一个变量。<br />
-示例：
-<pre><code>
-&lt;h1&gt;&lt;/h1&gt;</code></pre></p>
-
-<h3>append</h3>
-
-<p>在给定的Context中，向一个数组中添加一个元素，或者创建一个数组。<br />
-示例：
-<pre><code></p></li>
-</ul>
-
-
-  <div class="more">
-    <a href="/2013/05/revel-templates.html" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/2013/04/revel-results.html">Revel框架——Result</a> <span class="date">2013-04-27 16:00:20</span></h3>
-
-  <h2><a style="display: block;" name="results" href="#results"></a>Results</h2>
-
-<p>action必须返回一个用于处理响应生成的revel.Result。它遵循一个简单的接口：
-<pre><code>type Result interface {
-    Apply(req *Request, resp *Response)
-}</code></pre>
-revel.Controller提供一些产生Result的方法：</p>
-
-<ul>
-<li>Render，RenderTemplate——渲染模版，传递参数。</li>
-<li>RenderJson，RenderXml——将一个结构串行化为json或xml。</li>
-<li>RenderText——返回一个纯文本的响应。</li>
-<li>Redirect——重定向到另外一个action或URL。</li>
-<li>RenderFile——返回一个文件，通常为一个被下载的附件。</li>
-<li>RenderError——返回一个500响应，并且渲染errors/500.html模版。</li>
-<li>NotFound——返回一个404响应，并且渲染errors/404.html模版。</li>
-<li>Todo——返回一个存根响应（500）。</li>
-</ul>
-
-<p>另外，开发者可以定义自己的revel.Result并返回。</p>
-
-<h3>设置状态码和内容类型</h3>
-
-<p>每一个内建的Result都有一个默认的状态码和内容类型。覆盖这些默认值非常简单，只需要在响应中设置它们的属性即可：
-<pre><code>func (c Application) Action() revel.Result {
-    c.Response.Status = http.StatusTeapot
-    c.Response.ContentType = &ldquo;application/dishware&rdquo;
-    return c.Render()
-}</code></pre></p>
-
-<h2><a style="display: block;" name="render" href="#render"></a>Render</h2>
-
-<p>在一个action中调用Render（例如“Controller.Action”），mvc.Controller.Render做两件事：</p>
-
-
-  <div class="more">
-    <a href="/2013/04/revel-results.html" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/2013/04/revel-session-and-flash.html">Revel框架——Session域和Flash域</a> <span class="date">2013-04-27 13:47:00</span></h3>
-
-  <p>##Session / Flash域
-Revel提供两种基于Cookie的存储机制：
-<pre><code>// 一个已签名的Cookie（从而大小被限制为4kb）。
-// 约束: Key中不能有冒号（:）。
-type Session map[string]string</p>
-
-<p>// Flash表示一个每次请求都会被覆盖的Cookie。
-// 它允许数据每跨一个页面就被存储一次。
-// 它通常被用来实现成功或失败信息。
-// 例如Post/Redirect/Get模式: <a href="http://en.wikipedia.org/wiki/Post/Redirect/Get">http://en.wikipedia.org/wiki/Post/Redirect/Get</a>
-type Flash struct {
-    Data, Out map[string]string
-}</code></pre>
-##Session（会话）
-在Revel中，Session的概念是一个string类型的map，存储为加密签名的Cookie。<br />
-这意味着：</p>
-
-<ul>
-<li>大小被限制为4kb。</li>
-<li>所有的数据必须被串行化为一个string以用于存储。</li>
-<li>用户可以查看所有的数据（未加密的），但修改是安全的。
-##Flash
-Flash提供一次性的string存储。它在实现<a href="http://en.wikipedia.org/wiki/Post/Redirect/Get">Post/Redirect/Post模式</a>或短暂的“操作成功！”或“操作失败！”信息时非常有用。<br />
-下面是这种用法的一个例子：
-<pre><code>// 显示设置表格
-func (c App) ShowSettings() revel.Result {
-return c.Render()
-}</li>
-</ul>
-
-
-  <div class="more">
-    <a href="/2013/04/revel-session-and-flash.html" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/2013/04/revel-binding-parameters.html">Revel框架——绑定参数</a> <span class="date">2013-04-24 23:56:25</span></h3>
-
-  <p>##绑定参数
-Revel尝试尽可能地简单地将参数转换为它们期望的Go类型。这种从字符串到其他类型的转换被称为“数据绑定”。
-##参数
-所有的请求参数都被集中在了一个单独的Params对象中。其中包括：</p>
-
-<ul>
-<li>URL路径参数</li>
-<li>URL查询参数</li>
-<li>表格数据（multipart或非multipart）</li>
-<li>文件上传</li>
-</ul>
-
-<p>这里是定义（<a href="http://robfig.github.io/revel/docs/godoc/binder.html">godoc</a>）:
-<pre><code>type Params struct {
-    url.Values
-    Files map[string][]*multipart.FileHeader
-}</code></pre>
-内嵌的url.Values(<a href="http://www.golang.org/pkg/net/url/#Values">godoc</a>)提供了一个简单值的存取器，但是开发者会发现使用Revel对任意非字符串值的数据绑定机制更简单。
-##Action参数
-参数可以直接被接收为action的方法参数，例如：
-<pre><code>func (c AppController) Action(name string, ids []int, user User, img []byte) revel.Result {
-    &hellip;
-}</code></pre>
-在调用action之前，Revel要求它的Binder将这些参数转换为请求的数据类型。如果转换不成功，参数将会被赋予它的类型的零值。
-##Binder
-绑定一个参数到一个数据类型，就要使用Revel的Binder（<a href="http://robfig.github.io/revel/docs/godoc/binder.html">godoc</a>）。它像下面例子中展示的那样整合参数对象：
-<pre><code>func (c SomeController) Action() revel.Result {
-    var ids []int = c.Params.Bind(&ldquo;ids[]&ldquo;, reflect.TypeOf([]int{}))
-    &hellip;
-}</code></pre>
-下列的数据类型支持拆箱：</p>
-
-
-  <div class="more">
-    <a href="/2013/04/revel-binding-parameters.html" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/2013/04/revel-routing.html">Revel框架——路由</a> <span class="date">2013-04-24 16:47:50</span></h3>
-
-  <p>##路由
-路由被定义在单独的routes文件中，使用原始的Play!语法。<br />
-基本语法为：
-<pre><code>(METHOD) (URL Pattern) (Controller.Action)</code></pre>
-下面这个例子演示了所有功能：
-<pre><code># conf/routes</p>
-
-<h1><a style="display: block;" name="这个文件定义了应用所有的路由（以优先级从高到低排列）" href="#这个文件定义了应用所有的路由（以优先级从高到低排列）"></a>这个文件定义了应用所有的路由（以优先级从高到低排列）</h1>
-
-<p>GET    /login                 Application.Login      # 这是一个简单的路径
-GET    /hotels/?              Hotels.Index           # 匹配 /hotels 和 /hotels/ (尾部的斜线是可选的)
-GET    /hotels/{id}           Hotels.Show            # 提取一个URI参数(匹配 /[^/]+/)
-POST   /hotels/{&lt;[0-9]+&gt;id}   Hotels.Save            # 匹配自定义正则表达式的URI参数
-WS     /hotels/{id}/feed      Hotels.Feed            # WebSockets.
-POST   /hotels/{id}/{action}  Hotels.{action}        # 自动路由一些action.
-GET    /public/{&lt;.<em>&gt;filepath} Static.Serve(&ldquo;public&rdquo;) # 映射到 /app/public 下的资源 /public/&hellip;
-*      /{controller}/{action} {controller}.{action}  # 捕获所有; 自动生成URL</code></pre>
-让我们一行一行来看。
-###一个简单的路径
-<pre><code>GET    /login                 Application.Login</code></pre>
-最简单的路由使用精确匹配的方法和路径，在上例中调用了Application Controller的Login Action。
-###可选的尾部斜线
-<pre><code>GET    /hotels/?              Hotels.Index</code></pre>
-问号在正则表达式中作用为：它既允许路径匹配前面的字符也允许路径不匹配前面的字符。上例中，在路径为/hotels和/hotels/两种情况下，路由都会调用Hotels.Index。
-###URL参数
-<pre><code>GET    /hotels/{id}           Hotels.Show</code></pre>
-路径的片段可匹配并可提取。默认{id}会匹配除斜线（[^/]+）外的任何事物。在这种情况下，/hotels/123和/hotels/abc都匹配这个路由。<br />
-提取的参数可以在Controller.Params这个映射表中得到，也可以通过action方法的参数得到。例如：
-<pre><code>func (c Hotels) Show(id int) revel.Result {
-    &hellip;
-}</code></pre>
-或者
-<pre><code>func (c Hotels) Show() revel.Result {
-    var id string = c.Params.Get(&ldquo;id&rdquo;)
-    &hellip;
-}</code></pre>
-或者
-<pre><code>func (c Hotels) Show() revel.Result {
-    var id int = c.Params.Bind(&ldquo;id&rdquo;, reflect.TypeOf(0))
-    &hellip;
-}</code></pre>
-###采用自定义正则表达式的URL参数
-<pre><code>POST   /hotels/{&lt;[0-9]+&gt;id}   Hotels.Save</code></pre>
-路由为url参数指定了约束它们的正则表达式。正则表达式的位置在尖括号&lt;&gt;之间，参数名之前。<br />
-在这个例子中，我们限制Hotel ID为数字。
-###WebSockets
-<pre><code>WS     /hotels/{id}/feed      Hotels.Feed</code></pre>
-WebSockets的路由方式和其它请求相同，只不过使用一个含有WS标识符的方法。<br />
-相应的action必须有这样的签名：
-<pre><code>func (c Hotels) Feed(ws *websocket.Conn, id int) revel.Result {
-    &hellip;
-}</code></pre>
-###静态服务
-<pre><code>GET    /public/{&lt;.</em>&gt;filepath}       Static.Serve(&ldquo;public&rdquo;)
-GET    /favicon.ico                 Static.Serve(&ldquo;public&rdquo;, &ldquo;img/favicon.png&rdquo;)</code></pre>
-关于对静态资产目录的服务，Revel提供一个static组件，它包含一个单独的Static Controller。它服务action需要两个参数：</p>
-
-
-  <div class="more">
-    <a href="/2013/04/revel-routing.html" class="btn">read more..</a>
-  </div>
-</div>
-
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2013-05-11</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#Android-ref">Android <span>11</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/tags/#Android-ref">Android <span>10</span></a>
+</li>
+    
+      <li>
+  <a href="/tags/#lint-ref">lint <span>2</span></a>
+</li>
+    
+    </ul>
   </div>
 </div>
 

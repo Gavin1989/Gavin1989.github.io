@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Go语言之旅——并发</title>
+  
+    <meta name="author" content="Gao Xu">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css" type="text/css" rel="stylesheet" media="all">
+ 
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">Gavin Droider</a>
+          <ul class="nav">
+            
+              
+
+
+  <li><a href="/archive">Archive</a></li>
+
+
+            
+              
+
+
+  <li><a href="/tags">Tags</a></li>
+
+
+            
+              
+
+
+  <li><a href="/categories">Categories</a></li>
+
+
+            
+              
+
+
+  <li><a href="/pages">Pages</a></li>
+
+
+            
+              
+
+
+  <li><a href="/about">About Me</a></li>
+
+
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+  <h1>Go语言之旅——并发 </h1>
+</div>
+
+<div class="row">
+  <div class="span8">
+    <p>##Goroutine
+goroutine是由Go运行时管理的轻量级线程。表达式<br />
+<pre><code>go f(x, y, z)</code></pre>
+会在一个新的goroutine中执行<br />
+<pre><code>f(x, y, z)</code></pre>
+其中f、x、y、z是在当前goroutine中赋值的，并且f的执行是在新的goroutine中进行的。<br />
+goroutine在同一个地址空间中运行，因此访问共享内存时必须同步。sync包提供了这种功能，但是在Go中这种方法并不常用（接下来会看到）
+<pre><code>package main</p>
+
+<p>import (
+    &ldquo;fmt&rdquo;
+    &ldquo;time&rdquo;
+)</p>
+
+<p>func say(s string) {
+    for i := 0; i &lt; 5; i++ {
+        time.Sleep(100 * time.Millisecond)
+        fmt.Println(s)
+    }
+}</p>
+
+<p>func main() {
+    go say(&ldquo;world&rdquo;)
+    say(&ldquo;hello&rdquo;)
+}</code></pre>
+##Channel
+Channel是一种通过Channel操作符&lt;-发送和接收值的有类型的渠道：<br />
+<pre><code>ch &lt;- v // Send v to channel ch.
+v := &lt;-ch // Receive from ch, and assign value to v.</code></pre>
+箭头的方向就是数据流动的方向。与map和slice一样，channel必须在使用前就创建：<br />
+<pre><code>ch := make(chan int)</code></pre>
+默认情况下，在另一端准备好前发送和接收都将阻塞。这将允许goroutine在没有明确的锁和条件变量时可以同步。<br />
+<pre><code>package main</p>
+
+<p>import &ldquo;fmt&rdquo;</p>
+
+<p>func sum(a []int, c chan int) {
+    sum := 0
+    for _, v := range a {
+        sum += v
+    }
+    c &lt;- sum // Send sum to c
+}</p>
+
+<p>func main() {
+    a := []int{7, 2, 8, -9, 4, 0}</p>
+
+<pre><code>c := make(chan int)
+go sum(a[:len(a)/2], c)
+go sum(a[len(a)/2:], c)
+x, y := &lt;-c, &lt;-c // receive from c
+
+fmt.Println(x, y, x+y)
+</code></pre>
+
+<p>}</code></pre>
+Channel也可以是带缓冲的，在初始化Channel时，为make函数第二参数的位置上提供一个缓冲区长度。<br />
+<pre><code>ch := make(chan int, 100)</code></pre>
+只有在缓冲区满时发送数据才会阻塞，缓冲区为空时接收数据会阻塞。修改下面的例子，使缓冲区被填满，然后看看会发生什么。<br />
+<pre><code>package main</p>
+
+<p>import &ldquo;fmt&rdquo;</p>
+
+<p>func main() {
+    c := make(chan int, 2)
+    c &lt;- 1
+    c &lt;- 2
+    fmt.Println(&lt;-c)
+    fmt.Println(&lt;-c)
+}</code></pre>
+发送者可以close一个Channel来表明它将不会发送更多的值。接收者也可以提供赋值语句的第二个参数来测试Channel是否被关闭。<br />
+<pre><code>v, ok := &lt;-ch</code></pre>
+如果接收不到更多值并且Channel已被关闭，ok的值就是false。表达式<br />
+<pre><code>for i := range c</code></pre>
+循环从Channel接收值，直到Channel被关闭。
+注意：只有发送者才应该关闭Channel，而不是接收者。在一个已关闭的Channel上发送数据将会触发一个panic。
+另外需要注意的是：Channel不同于文件，通常不需要关闭它们。只有在接收者不需要更多的值时才有必要关闭Channel，比如停止一个range循环。
+<pre><code>package main</p>
+
+<p>import &ldquo;fmt&rdquo;</p>
+
+<p>func fibonacci (n int, c chan int) {
+    x, y := 0, 1
+    for i := 0; i &lt; n; i++ {
+        c &lt;- x
+        x, y = y, x+y
+    }
+    close&copy;
+}</p>
+
+<p>func main() {
+    c := make(chan int, 10)
+    go fibonacci(cap&copy;, c)
+    for i := range c {
+        fmt.Println(i)
+    }
+}</code></pre>
+##Select
+select语句可以让goroutine等待多个通讯操作。select会阻塞，直到某个case可以运行，随即执行这个case。当多个case都准备好时，它会随机选择一个。<br />
+<pre><code>package main</p>
+
+<p>import &ldquo;fmt&rdquo;</p>
+
+<p>func fibonacci(c, quit chan int) {
+    x, y := 0, 1
+    for {
+        select {
+        case c &lt;- x:
+            x, y = y, x+y
+        case &lt;-quit:
+            fmt.Println(&ldquo;quit&rdquo;)
+            return
+        }
+    }
+}</p>
+
+<p>func main() {
+    c := make(chan int)
+    quit := make(chan int)
+    go func() {
+        for i := 0; i &lt; 10; i++ {
+            fmt.Println(&lt;-c)
+        }
+        quit &lt;- 0
+    }()
+    fibonacci(c, quit)
+}</code></pre>
+如果其它case都没有准备好，select就会执行default case。尝试在default情况下不阻塞地发送和接收。<br />
+<pre><code>select {
+case i := &lt;-c:
+    // use i
+default:
+    // receiving from c would block.
+}</code></pre>
+示例代码：<br />
+<pre><code>package main</p>
+
+<p>import (
+    &ldquo;fmt&rdquo;
+    &ldquo;time&rdquo;
+)</p>
+
+<p>func main() {
+    tick := time.Tick(1e8)
+    boom := time.After(5e8)
+    for {
+        select {
+        case &lt;-tick:
+            fmt.Println(&ldquo;tick.&rdquo;)
+        case &lt;-boom:
+            fmt.Println(&ldquo;BOOM!&rdquo;)
+            return
+        default:
+            fmt.Println(&rdquo;   .&ldquo;)
+            time.Sleep(5e7)
+        }
+    }
+}</code></pre></p>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/2013/04/revel-concepts.html" title="Revel框架——基本概念">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/2013/03/android-lint-list-1.html" title="android工具之lint检测列表(一)">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2013-05-11</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#Go-ref">Go <span>17</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/tags/#Go-ref">Go <span>16</span></a>
+</li>
+    
+      <li>
+  <a href="/tags/#goroutine-ref">goroutine <span>1</span></a>
+</li>
+    
+    </ul>
+  </div>
+</div>
+
+      </div>
+
+      <footer>
+        <p>&copy; Gao Xu 2013 
+          with help from <a href="http://github.com/wendal/gor" target="_blank" title="Gor -- Fast Blog">Gor</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+		  and Idea from <a href="http://ruhoh.com" target="_blank" title="The Definitive Technical Blogging Framework">ruhoh</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+<script>
+  var pres = document.getElementsByTagName("pre");
+  for (var i=0; i < pres.length; ++i) {
+    pres[i].className = "prettyprint linenums";
+  }
+  prettyPrint();
+</script>
+
+    
+<script>
+    var _gaq=[['_setAccount','UA-123-12'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+  </body>
+</html>

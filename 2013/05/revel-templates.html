@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Revel框架之模版（Template）</title>
+  
+    <meta name="author" content="Gao Xu">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css" type="text/css" rel="stylesheet" media="all">
+ 
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">Gavin Droider</a>
+          <ul class="nav">
+            
+              
+
+
+  <li><a href="/archive">Archive</a></li>
+
+
+            
+              
+
+
+  <li><a href="/tags">Tags</a></li>
+
+
+            
+              
+
+
+  <li><a href="/categories">Categories</a></li>
+
+
+            
+              
+
+
+  <li><a href="/pages">Pages</a></li>
+
+
+            
+              
+
+
+  <li><a href="/about">About Me</a></li>
+
+
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+  <h1>Revel框架之模版（Template） </h1>
+</div>
+
+<div class="row">
+  <div class="span8">
+    <h2><a style="display: block;" name="模版" href="#模版"></a>模版</h2>
+
+<p>Revel使用<a href="http://www.golang.org/pkg/text/template/">Go模版</a>，它从两个目录搜索模版：</p>
+
+<ul>
+<li>应用的views目录（以及所有的子文件夹）。</li>
+<li>Revel自己的templates目录。</li>
+</ul>
+
+<p>Revel提供了错误页面的模版（在开发模式下显示友好的编译错误），不过应用需要创建一个同名的模版来重写它们，比如app/views/errors/500.html。</p>
+
+<h2><a style="display: block;" name="render-context" href="#render-context"></a>Render Context</h2>
+
+<p>Revel使用RenderArgs数据映射表来执行模版。除应用提供的数据以外，Revel还提供以下两项：</p>
+
+<ul>
+<li>“errors”——通过<a href="http://robfig.github.io/revel/docs/godoc/validation.html#Validation.ErrorMap">Validation.ErrorMap</a>返回的map。</li>
+
+<li><p>“flash”——通过之前的请求闪存的数据。</p>
+
+<h2><a style="display: block;" name="模版函数" href="#模版函数"></a>模版函数</h2>
+
+<p>Go提供<a href="http://www.golang.org/pkg/text/template/#Functions">一些在你的模版中使用的函数</a>。Revel增加了一些。阅读下面的文档，或者<a href="http://robfig.github.io/revel/docs/godoc/template.html#variables">查看它们的源代码</a>。</p>
+
+<h3>eq</h3>
+
+<p>简单地测试“a == b”。<br />
+示例：<br />
+<pre><code>&lt;div class=&ldquo;message you&rdquo;&gt;</code></pre></p>
+
+<h3>set</h3>
+
+<p>在给定的Context中设置一个变量。<br />
+示例：
+<pre><code>
+&lt;h1&gt;&lt;/h1&gt;</code></pre></p>
+
+<h3>append</h3>
+
+<p>在给定的Context中，向一个数组中添加一个元素，或者创建一个数组。<br />
+示例：
+<pre><code></p>
+
+<p>&lt;link rel=&ldquo;stylesheet&rdquo; type=&ldquo;text/css&rdquo; href=&ldquo;/public/map[site:map[title:Gavin Droider tagline:Gavin&#39;s Blog author:map[name:Gao Xu email:blackdoor@yeah.net github:gavin1989 twitter:LaotouIChouchou feedburner:gavin.fleischer@gmail.com] navigation:[archive.html tags.html categories.html pages.html about.md] config:map[RuhohSpec:1 theme:twitter production_url:http://gavin1989.github.io posts:map[permalink:/:categories/:title/ summary_lines:20 latest:10 layout:post exclude:] pages:map[permalink:pretty layout:page exclude:]]] data:map[title:Gavin Droider tagline:Gavin&#39;s Blog author:map[name:Gao Xu email:blackdoor@yeah.net github:gavin1989 twitter:LaotouIChouchou feedburner:gavin.fleischer@gmail.com] navigation:[archive.html tags.html categories.html pages.html about.md] config:map[RuhohSpec:1 theme:twitter production_url:http://gavin1989.github.io posts:map[permalink:/:categories/:title/ summary_lines:20 latest:10 layout:post exclude:] pages:map[permalink:pretty layout:page exclude:]]] layouts:map[default:map[_content:0xc2000e3870] page:map[layout:default _content:0xc2000e3930] post:map[layout:default _content:0xc2000e39f0]] theme:map[stylesheets:map[default:[bootstrap.min.css style.css] widgets:map[google_prettify:twitter-bootstrap.css]] javascripts:map[default:[]] manifest:map[author:Jacob Thornton and Mark Otto website:http://twitter.github.com/bootstrap]] urls:map[media:/assets/media theme:/assets/twitter theme_media:/assets/twitter/media theme_javascripts:/assets/twitter/javascripts theme_stylesheets:/assets/twitter/stylesheets base_path:/] db:map[pages:map[about.md:map[title:About Me description:&lt;nil&gt; _content:0xc2000e3f00 id:about.md layout:page permalink:pretty url:/about] archive.html:map[description:&lt;nil&gt; _content:0xc2000e3f60 id:archive.html layout:page permalink:pretty title:Archive url:/archive] categories.html:map[description:&lt;nil&gt; _content:0xc2000e3fc0 id:categories.html layout:page permalink:pretty title:Categories url:/categories] index.html:map[title:首页 description:&lt;nil&gt; _content:0xc20011a060 id:index.html layout:page permalink:pretty url:/] pages.html:map[description:&lt;nil&gt; _content:0xc20011a0c0 id:pages.html layout:page permalink:pretty title:Pages url:/pages] tags.html:map[description:&lt;nil&gt; _content:0xc20011a120 id:tags.html layout:page permalink:pretty title:Tags url:/tags]] navigation:[archive.html tags.html categories.html pages.html about.md] posts:map[dictionary:map[posts\android-bound-service.md:map[title:Android之Bound Service date:2013-03-10 00:35:09 description:&lt;nil&gt; categories:[Android] _content:0xc20011a5d0 layout:post permalink:<sup>2013</sup>&frasl;<sub>03</sub>/android-bound-service.html tags:[Android Bound Service] id:posts\android-bound-service.md _date:2013-03-10 00:35:09 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>03</sub>/android-bound-service.html] posts\android-lint-list-1.md:map[permalink:<sup>2013</sup>&frasl;<sub>03</sub>/android-lint-list-1.html tags:[Android lint] id:posts\android-lint-list-1.md _date:2013-05-11 00:00:00 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>03</sub>/android-lint-list-1.html title:android工具之lint检测列表(一) date:2013-05-11 description:&lt;nil&gt; categories:[Android] _content:0xc2000e3e10 layout:post] posts\golang-tour-2.md:map[title:Go语言之旅——基本概念（二） date:2013-04-17 14:24:37 description:&lt;nil&gt; categories:[Go] _content:0xc2001a2390 layout:post permalink:<sup>2013</sup>&frasl;<sub>04</sub>/golang-tour-2.html tags:[golang] id:posts\golang-tour-2.md _date:2013-04-17 14:24:37 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/golang-tour-2.html] posts\interrupt-thread.md:map[permalink:<sup>2013</sup>&frasl;<sub>02</sub>/interrupt-thread.html tags:[Java 中断线程] id:posts\interrupt-thread.md _date:2013-02-28 10:26:32 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>02</sub>/interrupt-thread.html title:中断线程 date:2013-02-28 10:26:32 description:&lt;nil&gt; categories:[Java 多线程] _content:0xc2001a2ab0 layout:post] posts\java-lang-thread.md:map[permalink:<sup>2013</sup>&frasl;<sub>02</sub>/java-lang-thread.html tags:[Java Thread] id:posts\java-lang-thread.md _date:2013-02-28 10:14:07 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>02</sub>/java-lang-thread.html title:java.lang.Thread date:2013-02-28 10:14:07 description:&lt;nil&gt; categories:[Java 多线程] _content:0xc20011a330 layout:post] posts\revel-concepts.md:map[title:Revel框架——基本概念 date:2013-05-12 description:&lt;nil&gt; categories:[Go] _content:0xc20011af60 layout:post permalink:<sup>2013</sup>&frasl;<sub>04</sub>/revel-concepts.html tags:[Go revel] id:posts\revel-concepts.md _date:2013-05-12 00:00:00 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/revel-concepts.html] posts\thread-sync.md:map[permalink:<sup>2013</sup>&frasl;<sub>02</sub>/thread-sync.html tags:[Java 线程同步] id:posts\thread-sync.md _date:2013-02-28 11:05:44 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>02</sub>/thread-sync.html title:线程同步 date:2013-02-28 11:05:44 description:&lt;nil&gt; categories:[Java 多线程] _content:0xc2001b42d0 layout:post] posts\revel-manual.md:map[title:Revel开发手册 date:2013-04-23 22:57:15 description:&lt;nil&gt; categories:[Go] _content:0xc2000e3660 layout:post permalink:<sup>2013</sup>&frasl;<sub>04</sub>/revel-manual.html tags:[Go revel] id:posts\revel-manual.md _date:2013-04-23 22:57:15 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/revel-manual.html] posts\how-are-android-touch-events-delivered.md:map[permalink:/<sup>2013</sup>&frasl;<sub>02</sub>/how-are-android-touch-events-delivered.html tags:[Android onTouch事件 view] id:posts\how-are-android-touch-events-delivered.md _date:2013-02-27 00:00:00 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>02</sub>/how-are-android-touch-events-delivered.html date:2013-02-27 description:&lt;nil&gt; title:Android中view的Touch事件传递顺序 categories:[Android 源码分析] _content:0xc2001a2900 layout:post] posts\java-lang-void.md:map[title:java.lang.Void类 date:2013-02-28 10:06:39 description:&lt;nil&gt; categories:[Java] _content:0xc20011a690 layout:post permalink:<sup>2013</sup>&frasl;<sub>02</sub>/java-lang-void.html tags:[Java Void] id:posts\java-lang-void.md _date:2013-02-28 10:06:39 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>02</sub>/java-lang-void.html] posts\android-lint.md:map[permalink:<sup>2013</sup>&frasl;<sub>03</sub>/android-lint.html tags:[Android lint] id:posts\android-lint.md _date:2013-03-14 22:49:13 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>03</sub>/android-lint.html title:android之lint date:2013-03-14 22:49:13 description:&lt;nil&gt; categories:[Android] _content:0xc2000b5e70 layout:post] posts\android-processes-and_threads.md:map[permalink:<sup>2013</sup>&frasl;<sub>03</sub>/android-processes-and_threads.html tags:[Android Process Thread] id:posts\android-processes-and_threads.md _date:2013-03-11 17:40:19 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>03</sub>/android-processes-and_threads.html title:Android之进程和线程 date:2013-03-11 17:40:19 description:&lt;nil&gt; categories:[Android] _content:0xc20011a570 layout:post] posts\golang-tour-1.md:map[permalink:<sup>2013</sup>&frasl;<sub>04</sub>/golang-tour-1.html tags:[Go tour] id:posts\golang-tour-1.md _date:2013-04-16 22:52:51 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/golang-tour-1.html title:Go语言之旅——基本概念（一） date:2013-04-16 22:52:51 description:&lt;nil&gt; categories:[Go] _content:0xc2001a21b0 layout:post] posts\ubuntu-golang-emacs-configuration.md:map[permalink:<sup>2013</sup>&frasl;<sub>04</sub>/ubuntu-golang-emacs-configuration.html tags:[emacs Go] id:posts\ubuntu-golang-emacs-configuration.md _date:2013-04-19 23:10:58 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/ubuntu-golang-emacs-configuration.html title:Ubuntu下golang的emacs配置 date:2013-04-19 23:10:58 description:&lt;nil&gt; categories:[Go] _content:0xc2001b44b0 layout:post] posts\state-of-thread.md:map[title:线程的状态 date:2013-02-28 10:29:17 description:&lt;nil&gt; categories:[Java 多线程] _content:0xc2001b4060 layout:post permalink:<sup>2013</sup>&frasl;<sub>02</sub>/state-of-thread.html tags:[Java 线程状态] id:posts\state-of-thread.md _date:2013-02-28 10:29:17 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>02</sub>/state-of-thread.html] posts\thoughtworks-developer-reading-radar.md:map[permalink:<sup>2013</sup>&frasl;<sub>04</sub>/thoughtworks-developer-reading-radar.html id:posts\thoughtworks-developer-reading-radar.md _date:2013-04-22 13:43:19 +0000 UTC tags:[] url:/<sup>2013</sup>&frasl;<sub>04</sub>/thoughtworks-developer-reading-radar.html title:[转载 ]] date:2013-04-22 13:43:19 description:&lt;nil&gt; categories:[读书] _content:0xc2001b4120 layout:post] posts\android-intentservice.md:map[permalink:<sup>2013</sup>&frasl;<sub>02</sub>/android-intentservice.html tags:[Android HandlerThread IntentService] id:posts\android-intentservice.md _date:2013-02-28 14:10:33 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>02</sub>/android-intentservice.html title:android之intentservice date:2013-02-28 14:10:33 description:&lt;nil&gt; categories:[Android 源码分析] _content:0xc2000e3480 layout:post] posts\blocking-queue.md:map[permalink:<sup>2013</sup>&frasl;<sub>02</sub>/blocking-queue.html tags:[Java 线程 阻塞队列] id:posts\blocking-queue.md _date:2013-02-28 13:59:39 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>02</sub>/blocking-queue.html title:阻塞队列 date:2013-02-28 13:59:39 description:&lt;nil&gt; categories:[Java 多线程] _content:0xc20011a900 layout:post] posts\gavin-s-ndk.md:map[permalink:<sup>2013</sup>&frasl;<sub>04</sub>/gavin-s-ndk.html tags:[ndk] id:posts\gavin-s-ndk.md _date:2013-05-12 00:00:00 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/gavin-s-ndk.html title:新篇章——NDK date:2013-05-12 description:&lt;nil&gt; categories:[Android] _content:0xc20011aab0 layout:post] posts\golang-stein-gcd.md:map[title:Go——Stein算法求最大公约数 date:2013-04-17 23:28:07 description:&lt;nil&gt; categories:[Go] _content:0xc20011afc0 layout:post permalink:<sup>2013</sup>&frasl;<sub>04</sub>/golang-stein-gcd.html tags:[Go stein] id:posts\golang-stein-gcd.md _date:2013-04-17 23:28:07 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/golang-stein-gcd.html] posts\golang-tour-method-and-interface.md:map[permalink:<sup>2013</sup>&frasl;<sub>04</sub>/golang-tour-method-and-interface.html tags:[Go] id:posts\golang-tour-method-and-interface.md _date:2013-04-17 16:51:51 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/golang-tour-method-and-interface.html title:Go语言之旅——方法与接口 date:2013-04-17 16:51:51 description:&lt;nil&gt; categories:[Go] _content:0xc2001a2780 layout:post] posts\revel-results.md:map[title:Revel框架——Result date:2013-04-27 16:00:20 description:&lt;nil&gt; categories:[Go] _content:0xc2001a2150 layout:post permalink:<sup>2013</sup>&frasl;<sub>04</sub>/revel-results.html tags:[Go revel] id:posts\revel-results.md _date:2013-04-27 16:00:20 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/revel-results.html] posts\revel-routing.md:map[permalink:<sup>2013</sup>&frasl;<sub>04</sub>/revel-routing.html tags:[Go revel] id:posts\revel-routing.md _date:2013-04-24 16:47:50 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/revel-routing.html title:Revel框架——路由 date:2013-04-24 16:47:50 description:&lt;nil&gt; categories:[Go] _content:0xc2001a23c0 layout:post] posts\revel-sharing-functionality.md:map[permalink:<sup>2013</sup>&frasl;<sub>04</sub>/revel-sharing-functionality.html tags:[Go revel] id:posts\revel-sharing-functionality.md _date:2013-04-23 22:37:40 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/revel-sharing-functionality.html title:Revel框架——共享功能 date:2013-04-23 22:37:40 description:&lt;nil&gt; categories:[Go] _content:0xc2001a2c00 layout:post] posts\android-aidl.md:map[title:Android之AIDL date:2013-03-10 19:57:28 description:&lt;nil&gt; categories:[Android] _content:0xc20011a420 layout:post permalink:<sup>2013</sup>&frasl;<sub>03</sub>/android-aidl.html tags:[AIDL Android] id:posts\android-aidl.md _date:2013-03-10 19:57:28 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>03</sub>/android-aidl.html] posts\android-handler.md:map[permalink:<sup>2013</sup>&frasl;<sub>02</sub>/android-handler.html tags:[Android Handler Looper Message] id:posts\android-handler.md _date:2013-02-28 00:00:00 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>02</sub>/android-handler.html title:Android之Handler date:2013-02-28 description:&lt;nil&gt; categories:[Android 源码分析] _content:0xc2000e32a0 layout:post] posts\property-of-thread.md:map[title:线程的属性（优先级、守护线程、未捕获异常处理器） date:2013-02-28 10:45:48 description:&lt;nil&gt; categories:[Java 多线程] _content:0xc20011a930 layout:post permalink:property-of-thread.html tags:[Java 守护线程 未捕获异常处理器 线程优先级] id:posts\property-of-thread.md _date:2013-02-28 10:45:48 +0000 UTC url:/property-of-thread.html] posts\revel-organization.md:map[title:Revel框架——结构布局 date:2013-04-23 17:57:39 description:&lt;nil&gt; categories:[Go] _content:0xc2000b5f60 layout:post permalink:<sup>2013</sup>&frasl;<sub>04</sub>/revel-organization.html tags:[Go revel] id:posts\revel-organization.md _date:2013-04-23 17:57:39 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/revel-organization.html] posts\revel-session-and-flash.md:map[title:Revel框架——Session域和Flash域 date:2013-04-27 13:47:00 description:&lt;nil&gt; categories:[Go] _content:0xc2001a26c0 layout:post permalink:<sup>2013</sup>&frasl;<sub>04</sub>/revel-session-and-flash.html tags:[Go revel] id:posts\revel-session-and-flash.md _date:2013-04-27 13:47:00 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/revel-session-and-flash.html] posts\revel-templates.md:map[title:Revel框架之模版（Template） date:2013-05-08 14:28:13 description:&lt;nil&gt; categories:[Go] _content:0xc2001a2ea0 layout:post permalink:<sup>2013</sup>&frasl;<sub>05</sub>/revel-templates.html tags:[Go revel] id:posts\revel-templates.md _date:2013-05-08 14:28:13 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>05</sub>/revel-templates.html] posts\android-looper.md:map[permalink:<sup>2013</sup>&frasl;<sub>02</sub>/android-looper.html tags:[Android Handler Looper Message] id:posts\android-looper.md _date:2013-02-28 14:18:11 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>02</sub>/android-looper.html title:Android之Looper date:2013-02-28 14:18:11 description:&lt;nil&gt; categories:[Android 源码分析] _content:0xc20011a2a0 layout:post] posts\android-service.md:map[title:Android之Service date:2013-03-07 13:02:03 description:&lt;nil&gt; categories:[Android] _content:0xc20011a750 layout:post permalink:<sup>2013</sup>&frasl;<sub>02</sub>/android-service.html tags:[Android Service] id:posts\android-service.md _date:2013-03-07 13:02:03 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>02</sub>/android-service.html] posts\golang-fibonacci.md:map[permalink:<sup>2013</sup>&frasl;<sub>04</sub>/golang-fibonacci.html tags:[fibonacci Go] id:posts\golang-fibonacci.md _date:2013-04-17 22:34:41 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/golang-fibonacci.html title:Go——斐波那契数列 date:2013-04-17 22:34:41 description:&lt;nil&gt; categories:[Go] _content:0xc20011ad20 layout:post] posts\golang-tour-concurrent.md:map[title:Go语言之旅——并发 date:2013-05-11 description:&lt;nil&gt; categories:[Go] _content:0xc2001a2570 layout:post permalink:<sup>2013</sup>&frasl;<sub>04</sub>/golang-tour-concurrent.html tags:[Go goroutine] id:posts\golang-tour-concurrent.md _date:2013-05-11 00:00:00 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/golang-tour-concurrent.html] posts\revel-binding-parameters.md:map[permalink:<sup>2013</sup>&frasl;<sub>04</sub>/revel-binding-parameters.html tags:[Go revel] id:posts\revel-binding-parameters.md _date:2013-04-24 23:56:25 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>04</sub>/revel-binding-parameters.html title:Revel框架——绑定参数 date:2013-04-24 23:56:25 description:&lt;nil&gt; categories:[Go] _content:0xc20011aba0 layout:post] posts\revel-interceptors.md:map[title:Revel框架之拦截器 date:2013-05-08 15:16:51 description:&lt;nil&gt; categories:[Go] _content:0xc2000e3330 layout:post permalink:<sup>2013</sup>&frasl;<sub>05</sub>/revel-interceptors.html tags:[Go revel] id:posts\revel-interceptors.md _date:2013-05-08 15:16:51 +0000 UTC url:/<sup>2013</sup>&frasl;<sub>05</sub>/revel-interceptors.html]] tags:map[Looper:0xc200091240 未捕获异常处理器:0xc200091440 IntentService:0xc200150140 goroutine:0xc200091980 golang:0xc200091ac0 Void:0xc200091d80 tour:0xc200091e80 线程:0xc200150180 阻塞队列:0xc200150200 Android:0xc200091140 Message:0xc200091280 Service:0xc2000918c0 线程同步:0xc200091c40 emacs:0xc200091f00 ndk:0xc200150240 Java:0xc2000913c0 中断线程:0xc200091b00 onTouch事件:0xc200091c80 HandlerThread:0xc200150100 守护线程:0xc200091400 lint:0xc200091a80 view:0xc200091cc0 Process:0xc200091e40 stein:0xc200150280 AIDL:0xc2000ebfc0 线程优先级:0xc200091480 Go:0xc200091640 Bound Service:0xc200091a00 Handler:0xc200091200 revel:0xc200091680 fibonacci:0xc200091900 Thread:0xc200091b80 线程状态:0xc200091fc0] categories:map[Android:0xc2000911c0 源码分析:0xc2000912c0 Java:0xc200091500 多线程:0xc200091600 Go:0xc200091700 读书:0xc200150080] chronological:[posts\gavin-s-ndk.md posts\revel-concepts.md posts\golang-tour-concurrent.md posts\android-lint-list-1.md posts\revel-interceptors.md posts\revel-templates.md posts\revel-results.md posts\revel-session-and-flash.md posts\revel-binding-parameters.md posts\revel-routing.md posts\revel-manual.md posts\revel-sharing-functionality.md posts\revel-organization.md posts\thoughtworks-developer-reading-radar.md posts\ubuntu-golang-emacs-configuration.md posts\golang-stein-gcd.md posts\golang-fibonacci.md posts\golang-tour-method-and-interface.md posts\golang-tour-2.md posts\golang-tour-1.md posts\android-lint.md posts\android-processes-and_threads.md posts\android-aidl.md posts\android-bound-service.md posts\android-service.md posts\android-looper.md posts\android-intentservice.md posts\blocking-queue.md posts\thread-sync.md posts\property-of-thread.md posts\state-of-thread.md posts\interrupt-thread.md posts\java-lang-thread.md posts\java-lang-void.md posts\android-handler.md posts\how-are-android-touch-events-delivered.md] collated:[0xc2001b45a0]]]]&ldquo;&gt;
+</code></pre></p>
+
+<h3>field</h3>
+
+<p>输入字段的一个辅助函数：<br />
+给定一个字段名，它返回一个包含下列成员的结构体：</p></li>
+
+<li><p>Id：字段名，转换为适当的HTML元素ID。</p></li>
+
+<li><p>Name：字段名。</p></li>
+
+<li><p>Value：该字段在当前RenderArgs中的值。</p></li>
+
+<li><p>Flash：闪存中该字段的值。</p></li>
+
+<li><p>Error：所有与该字段有关的错误信息。</p></li>
+
+<li><p>ErrorClass：如果有错误，则为&rdquo;hasError&rdquo;，否则为&rdquo;&ldquo;；
+<a href="http://robfig.github.io/revel/docs/godoc/field.html">查看文档</a>。<br />
+示例：
+<pre><code>
+&lt;p class=&ldquo;&rdquo;&gt;
+    &lt;strong&gt;Check In Date:&lt;/strong&gt;
+    &lt;input type=&ldquo;text&rdquo; size=&ldquo;10&rdquo; name=&ldquo;&rdquo; class=&ldquo;datepicker&rdquo; value=&ldquo;&rdquo; &gt;
+    * &lt;span class=&ldquo;error&rdquo;&gt;&lt;/span&gt;
+&lt;/p&gt;
+</code></pre></p>
+
+<h3>option</h3>
+
+<p>结合字段助手，协助构建HTML option元素。<br />
+示例：
+<pre><code>
+&lt;select name=&ldquo;&rdquo;&gt;</p></li>
+</ul>
+
+<p>&lt;/select&gt;
+</code></pre></p>
+
+<h3>radio</h3>
+
+<p>结合字段助手，协助构建HTML单选输入元素。<br />
+示例：
+<pre><code>
+     Smoking
+     Non smoking
+</code></pre></p>
+
+<h2><a style="display: block;" name="nl2br" href="#nl2br"></a>nl2br</h2>
+
+<p>换行转换为HTML断行。<br />
+示例：
+<pre><code>You said:
+&lt;div class=&ldquo;comment&rdquo;&gt;&lt;/div&gt;</code></pre></p>
+
+<h3>pluralize</h3>
+
+<p>辅助输入正确的单词复数。<br />
+示例：<br />
+<pre><code>There are  comment</code></pre></p>
+
+<h2><a style="display: block;" name="including" href="#including"></a>Including</h2>
+
+<p>Go模版允许包含模版，例如：<br />
+<pre><code></code></pre>
+这里需要注意两点：</p>
+
+<ul>
+<li>路径相对于app/views。</li>
+
+<li><p>所有被包含的模版必须放在根目录下（app/views），这是一个（希望是暂时的）限制。</p>
+
+<h2><a style="display: block;" name="提示" href="#提示"></a>提示</h2>
+
+<p>示例应用包括Revel都试图示范有效地利用Go模版。详情请参考：</p></li>
+
+<li><p>revel/samples/booking/app/views/header.html</p></li>
+
+<li><p>revel/samples/booking/app/views/Hotels/Book.html</p></li>
+</ul>
+
+<p>模版自身可以利用辅助函数设置title和外部的样式。<br />
+例如，header可以像下面这样：
+<pre><code>&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;&lt;/title&gt;
+        &lt;meta http-equiv=&ldquo;Content-Type&rdquo; content=&ldquo;text/html; charset=utf-8&rdquo;&gt;
+        &lt;link rel=&ldquo;stylesheet&rdquo; type=&ldquo;text/css&rdquo; media=&ldquo;screen&rdquo; href=&ldquo;/public/css/main.css&rdquo;&gt;
+        &lt;link rel=&ldquo;shortcut icon&rdquo; type=&ldquo;image/png&rdquo; href=&ldquo;/public/img/favicon.png&rdquo;&gt;</p>
+
+<pre><code>        &amp;lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/public/map[site:map[title:Gavin Droider tagline:Gavin&amp;#39;s Blog author:map[name:Gao Xu email:blackdoor@yeah.net github:gavin1989 twitter:LaotouIChouchou feedburner:gavin.fleischer@gmail.com] navigation:[archive.html tags.html categories.html pages.html about.md] config:map[RuhohSpec:1 theme:twitter production_url:http://gavin1989.github.io posts:map[permalink:/:categories/:title/ summary_lines:20 latest:10 layout:post exclude:] pages:map[permalink:pretty layout:page exclude:]]] data:map[title:Gavin Droider tagline:Gavin&amp;#39;s Blog author:map[name:Gao Xu email:blackdoor@yeah.net github:gavin1989 twitter:LaotouIChouchou feedburner:gavin.fleischer@gmail.com] navigation:[archive.html tags.html categories.html pages.html about.md] config:map[RuhohSpec:1 theme:twitter production_url:http://gavin1989.github.io posts:map[permalink:/:categories/:title/ summary_lines:20 latest:10 layout:post exclude:] pages:map[permalink:pretty layout:page exclude:]]] layouts:map[default:map[_content:0xc2000e3870] page:map[layout:default _content:0xc2000e3930] post:map[layout:default _content:0xc2000e39f0]] theme:map[stylesheets:map[default:[bootstrap.min.css style.css] widgets:map[google_prettify:twitter-bootstrap.css]] javascripts:map[default:[]] manifest:map[author:Jacob Thornton and Mark Otto website:http://twitter.github.com/bootstrap]] urls:map[media:/assets/media theme:/assets/twitter theme_media:/assets/twitter/media theme_javascripts:/assets/twitter/javascripts theme_stylesheets:/assets/twitter/stylesheets base_path:/] db:map[pages:map[about.md:map[title:About Me description:&amp;lt;nil&amp;gt; _content:0xc2000e3f00 id:about.md layout:page permalink:pretty url:/about] archive.html:map[description:&amp;lt;nil&amp;gt; _content:0xc2000e3f60 id:archive.html layout:page permalink:pretty title:Archive url:/archive] categories.html:map[description:&amp;lt;nil&amp;gt; _content:0xc2000e3fc0 id:categories.html layout:page permalink:pretty title:Categories url:/categories] index.html:map[title:首页 description:&amp;lt;nil&amp;gt; _content:0xc20011a060 id:index.html layout:page permalink:pretty url:/] pages.html:map[description:&amp;lt;nil&amp;gt; _content:0xc20011a0c0 id:pages.html layout:page permalink:pretty title:Pages url:/pages] tags.html:map[description:&amp;lt;nil&amp;gt; _content:0xc20011a120 id:tags.html layout:page permalink:pretty title:Tags url:/tags]] navigation:[archive.html tags.html categories.html pages.html about.md] posts:map[dictionary:map[posts\android-bound-service.md:map[title:Android之Bound Service date:2013-03-10 00:35:09 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc20011a5d0 layout:post permalink:2013/03/android-bound-service.html tags:[Android Bound Service] id:posts\android-bound-service.md _date:2013-03-10 00:35:09 +0000 UTC url:/2013/03/android-bound-service.html] posts\android-lint-list-1.md:map[permalink:2013/03/android-lint-list-1.html tags:[Android lint] id:posts\android-lint-list-1.md _date:2013-05-11 00:00:00 +0000 UTC url:/2013/03/android-lint-list-1.html title:android工具之lint检测列表(一) date:2013-05-11 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc2000e3e10 layout:post] posts\golang-tour-2.md:map[permalink:2013/04/golang-tour-2.html tags:[golang] id:posts\golang-tour-2.md _date:2013-04-17 14:24:37 +0000 UTC url:/2013/04/golang-tour-2.html title:Go语言之旅——基本概念（二） date:2013-04-17 14:24:37 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a2390 layout:post] posts\interrupt-thread.md:map[title:中断线程 date:2013-02-28 10:26:32 description:&amp;lt;nil&amp;gt; categories:[Java 多线程] _content:0xc2001a2ab0 layout:post permalink:2013/02/interrupt-thread.html tags:[Java 中断线程] id:posts\interrupt-thread.md _date:2013-02-28 10:26:32 +0000 UTC url:/2013/02/interrupt-thread.html] posts\java-lang-thread.md:map[permalink:2013/02/java-lang-thread.html tags:[Java Thread] id:posts\java-lang-thread.md _date:2013-02-28 10:14:07 +0000 UTC url:/2013/02/java-lang-thread.html title:java.lang.Thread date:2013-02-28 10:14:07 description:&amp;lt;nil&amp;gt; categories:[Java 多线程] _content:0xc20011a330 layout:post] posts\revel-concepts.md:map[permalink:2013/04/revel-concepts.html tags:[Go revel] id:posts\revel-concepts.md _date:2013-05-12 00:00:00 +0000 UTC url:/2013/04/revel-concepts.html title:Revel框架——基本概念 date:2013-05-12 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc20011af60 layout:post] posts\thread-sync.md:map[title:线程同步 date:2013-02-28 11:05:44 description:&amp;lt;nil&amp;gt; categories:[Java 多线程] _content:0xc2001b42d0 layout:post permalink:2013/02/thread-sync.html tags:[Java 线程同步] id:posts\thread-sync.md _date:2013-02-28 11:05:44 +0000 UTC url:/2013/02/thread-sync.html] posts\revel-manual.md:map[permalink:2013/04/revel-manual.html tags:[Go revel] id:posts\revel-manual.md _date:2013-04-23 22:57:15 +0000 UTC url:/2013/04/revel-manual.html title:Revel开发手册 date:2013-04-23 22:57:15 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2000e3660 layout:post] posts\how-are-android-touch-events-delivered.md:map[date:2013-02-27 description:&amp;lt;nil&amp;gt; title:Android中view的Touch事件传递顺序 categories:[Android 源码分析] _content:0xc2001a2900 layout:post permalink:/2013/02/how-are-android-touch-events-delivered.html tags:[Android onTouch事件 view] id:posts\how-are-android-touch-events-delivered.md _date:2013-02-27 00:00:00 +0000 UTC url:/2013/02/how-are-android-touch-events-delivered.html] posts\java-lang-void.md:map[title:java.lang.Void类 date:2013-02-28 10:06:39 description:&amp;lt;nil&amp;gt; categories:[Java] _content:0xc20011a690 layout:post permalink:2013/02/java-lang-void.html tags:[Java Void] id:posts\java-lang-void.md _date:2013-02-28 10:06:39 +0000 UTC url:/2013/02/java-lang-void.html] posts\android-lint.md:map[title:android之lint date:2013-03-14 22:49:13 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc2000b5e70 layout:post permalink:2013/03/android-lint.html tags:[Android lint] id:posts\android-lint.md _date:2013-03-14 22:49:13 +0000 UTC url:/2013/03/android-lint.html] posts\android-processes-and_threads.md:map[title:Android之进程和线程 date:2013-03-11 17:40:19 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc20011a570 layout:post permalink:2013/03/android-processes-and_threads.html tags:[Android Process Thread] id:posts\android-processes-and_threads.md _date:2013-03-11 17:40:19 +0000 UTC url:/2013/03/android-processes-and_threads.html] posts\golang-tour-1.md:map[permalink:2013/04/golang-tour-1.html tags:[Go tour] id:posts\golang-tour-1.md _date:2013-04-16 22:52:51 +0000 UTC url:/2013/04/golang-tour-1.html title:Go语言之旅——基本概念（一） date:2013-04-16 22:52:51 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a21b0 layout:post] posts\ubuntu-golang-emacs-configuration.md:map[permalink:2013/04/ubuntu-golang-emacs-configuration.html tags:[emacs Go] id:posts\ubuntu-golang-emacs-configuration.md _date:2013-04-19 23:10:58 +0000 UTC url:/2013/04/ubuntu-golang-emacs-configuration.html title:Ubuntu下golang的emacs配置 date:2013-04-19 23:10:58 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001b44b0 layout:post] posts\state-of-thread.md:map[title:线程的状态 date:2013-02-28 10:29:17 description:&amp;lt;nil&amp;gt; categories:[Java 多线程] _content:0xc2001b4060 layout:post permalink:2013/02/state-of-thread.html tags:[Java 线程状态] id:posts\state-of-thread.md _date:2013-02-28 10:29:17 +0000 UTC url:/2013/02/state-of-thread.html] posts\thoughtworks-developer-reading-radar.md:map[permalink:2013/04/thoughtworks-developer-reading-radar.html id:posts\thoughtworks-developer-reading-radar.md _date:2013-04-22 13:43:19 +0000 UTC tags:[] url:/2013/04/thoughtworks-developer-reading-radar.html title:[转载 ]] date:2013-04-22 13:43:19 description:&amp;lt;nil&amp;gt; categories:[读书] _content:0xc2001b4120 layout:post] posts\android-intentservice.md:map[permalink:2013/02/android-intentservice.html tags:[Android HandlerThread IntentService] id:posts\android-intentservice.md _date:2013-02-28 14:10:33 +0000 UTC url:/2013/02/android-intentservice.html title:android之intentservice date:2013-02-28 14:10:33 description:&amp;lt;nil&amp;gt; categories:[Android 源码分析] _content:0xc2000e3480 layout:post] posts\blocking-queue.md:map[permalink:2013/02/blocking-queue.html tags:[Java 线程 阻塞队列] id:posts\blocking-queue.md _date:2013-02-28 13:59:39 +0000 UTC url:/2013/02/blocking-queue.html title:阻塞队列 date:2013-02-28 13:59:39 description:&amp;lt;nil&amp;gt; categories:[Java 多线程] _content:0xc20011a900 layout:post] posts\gavin-s-ndk.md:map[title:新篇章——NDK date:2013-05-12 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc20011aab0 layout:post permalink:2013/04/gavin-s-ndk.html tags:[ndk] id:posts\gavin-s-ndk.md _date:2013-05-12 00:00:00 +0000 UTC url:/2013/04/gavin-s-ndk.html] posts\golang-stein-gcd.md:map[permalink:2013/04/golang-stein-gcd.html tags:[Go stein] id:posts\golang-stein-gcd.md _date:2013-04-17 23:28:07 +0000 UTC url:/2013/04/golang-stein-gcd.html title:Go——Stein算法求最大公约数 date:2013-04-17 23:28:07 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc20011afc0 layout:post] posts\golang-tour-method-and-interface.md:map[title:Go语言之旅——方法与接口 date:2013-04-17 16:51:51 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a2780 layout:post permalink:2013/04/golang-tour-method-and-interface.html tags:[Go] id:posts\golang-tour-method-and-interface.md _date:2013-04-17 16:51:51 +0000 UTC url:/2013/04/golang-tour-method-and-interface.html] posts\revel-results.md:map[title:Revel框架——Result date:2013-04-27 16:00:20 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a2150 layout:post permalink:2013/04/revel-results.html tags:[Go revel] id:posts\revel-results.md _date:2013-04-27 16:00:20 +0000 UTC url:/2013/04/revel-results.html] posts\revel-routing.md:map[permalink:2013/04/revel-routing.html tags:[Go revel] id:posts\revel-routing.md _date:2013-04-24 16:47:50 +0000 UTC url:/2013/04/revel-routing.html title:Revel框架——路由 date:2013-04-24 16:47:50 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a23c0 layout:post] posts\revel-sharing-functionality.md:map[title:Revel框架——共享功能 date:2013-04-23 22:37:40 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a2c00 layout:post permalink:2013/04/revel-sharing-functionality.html tags:[Go revel] id:posts\revel-sharing-functionality.md _date:2013-04-23 22:37:40 +0000 UTC url:/2013/04/revel-sharing-functionality.html] posts\android-aidl.md:map[permalink:2013/03/android-aidl.html tags:[AIDL Android] id:posts\android-aidl.md _date:2013-03-10 19:57:28 +0000 UTC url:/2013/03/android-aidl.html title:Android之AIDL date:2013-03-10 19:57:28 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc20011a420 layout:post] posts\android-handler.md:map[permalink:2013/02/android-handler.html tags:[Android Handler Looper Message] id:posts\android-handler.md _date:2013-02-28 00:00:00 +0000 UTC url:/2013/02/android-handler.html title:Android之Handler date:2013-02-28 description:&amp;lt;nil&amp;gt; categories:[Android 源码分析] _content:0xc2000e32a0 layout:post] posts\property-of-thread.md:map[title:线程的属性（优先级、守护线程、未捕获异常处理器） date:2013-02-28 10:45:48 description:&amp;lt;nil&amp;gt; categories:[Java 多线程] _content:0xc20011a930 layout:post permalink:property-of-thread.html tags:[Java 守护线程 未捕获异常处理器 线程优先级] id:posts\property-of-thread.md _date:2013-02-28 10:45:48 +0000 UTC url:/property-of-thread.html] posts\revel-organization.md:map[permalink:2013/04/revel-organization.html tags:[Go revel] id:posts\revel-organization.md _date:2013-04-23 17:57:39 +0000 UTC url:/2013/04/revel-organization.html title:Revel框架——结构布局 date:2013-04-23 17:57:39 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2000b5f60 layout:post] posts\revel-session-and-flash.md:map[permalink:2013/04/revel-session-and-flash.html tags:[Go revel] id:posts\revel-session-and-flash.md _date:2013-04-27 13:47:00 +0000 UTC url:/2013/04/revel-session-and-flash.html title:Revel框架——Session域和Flash域 date:2013-04-27 13:47:00 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a26c0 layout:post] posts\revel-templates.md:map[title:Revel框架之模版（Template） date:2013-05-08 14:28:13 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a2ea0 layout:post permalink:2013/05/revel-templates.html tags:[Go revel] id:posts\revel-templates.md _date:2013-05-08 14:28:13 +0000 UTC url:/2013/05/revel-templates.html] posts\android-looper.md:map[permalink:2013/02/android-looper.html tags:[Android Handler Looper Message] id:posts\android-looper.md _date:2013-02-28 14:18:11 +0000 UTC url:/2013/02/android-looper.html title:Android之Looper date:2013-02-28 14:18:11 description:&amp;lt;nil&amp;gt; categories:[Android 源码分析] _content:0xc20011a2a0 layout:post] posts\android-service.md:map[title:Android之Service date:2013-03-07 13:02:03 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc20011a750 layout:post permalink:2013/02/android-service.html tags:[Android Service] id:posts\android-service.md _date:2013-03-07 13:02:03 +0000 UTC url:/2013/02/android-service.html] posts\golang-fibonacci.md:map[permalink:2013/04/golang-fibonacci.html tags:[fibonacci Go] id:posts\golang-fibonacci.md _date:2013-04-17 22:34:41 +0000 UTC url:/2013/04/golang-fibonacci.html title:Go——斐波那契数列 date:2013-04-17 22:34:41 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc20011ad20 layout:post] posts\golang-tour-concurrent.md:map[title:Go语言之旅——并发 date:2013-05-11 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a2570 layout:post permalink:2013/04/golang-tour-concurrent.html tags:[Go goroutine] id:posts\golang-tour-concurrent.md _date:2013-05-11 00:00:00 +0000 UTC url:/2013/04/golang-tour-concurrent.html] posts\revel-binding-parameters.md:map[permalink:2013/04/revel-binding-parameters.html tags:[Go revel] id:posts\revel-binding-parameters.md _date:2013-04-24 23:56:25 +0000 UTC url:/2013/04/revel-binding-parameters.html title:Revel框架——绑定参数 date:2013-04-24 23:56:25 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc20011aba0 layout:post] posts\revel-interceptors.md:map[title:Revel框架之拦截器 date:2013-05-08 15:16:51 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2000e3330 layout:post permalink:2013/05/revel-interceptors.html tags:[Go revel] id:posts\revel-interceptors.md _date:2013-05-08 15:16:51 +0000 UTC url:/2013/05/revel-interceptors.html]] tags:map[AIDL:0xc2000ebfc0 线程优先级:0xc200091480 Go:0xc200091640 Bound Service:0xc200091a00 Handler:0xc200091200 revel:0xc200091680 fibonacci:0xc200091900 Thread:0xc200091b80 线程状态:0xc200091fc0 Looper:0xc200091240 未捕获异常处理器:0xc200091440 IntentService:0xc200150140 goroutine:0xc200091980 golang:0xc200091ac0 Void:0xc200091d80 tour:0xc200091e80 线程:0xc200150180 阻塞队列:0xc200150200 Android:0xc200091140 Message:0xc200091280 Service:0xc2000918c0 线程同步:0xc200091c40 emacs:0xc200091f00 ndk:0xc200150240 Java:0xc2000913c0 中断线程:0xc200091b00 onTouch事件:0xc200091c80 HandlerThread:0xc200150100 守护线程:0xc200091400 lint:0xc200091a80 view:0xc200091cc0 Process:0xc200091e40 stein:0xc200150280] categories:map[Android:0xc2000911c0 源码分析:0xc2000912c0 Java:0xc200091500 多线程:0xc200091600 Go:0xc200091700 读书:0xc200150080] chronological:[posts\gavin-s-ndk.md posts\revel-concepts.md posts\golang-tour-concurrent.md posts\android-lint-list-1.md posts\revel-interceptors.md posts\revel-templates.md posts\revel-results.md posts\revel-session-and-flash.md posts\revel-binding-parameters.md posts\revel-routing.md posts\revel-manual.md posts\revel-sharing-functionality.md posts\revel-organization.md posts\thoughtworks-developer-reading-radar.md posts\ubuntu-golang-emacs-configuration.md posts\golang-stein-gcd.md posts\golang-fibonacci.md posts\golang-tour-method-and-interface.md posts\golang-tour-2.md posts\golang-tour-1.md posts\android-lint.md posts\android-processes-and_threads.md posts\android-aidl.md posts\android-bound-service.md posts\android-service.md posts\android-looper.md posts\android-intentservice.md posts\blocking-queue.md posts\thread-sync.md posts\property-of-thread.md posts\state-of-thread.md posts\interrupt-thread.md posts\java-lang-thread.md posts\java-lang-void.md posts\android-handler.md posts\how-are-android-touch-events-delivered.md] collated:[0xc2001b45a0]]]]&quot;&gt;
+
+    &amp;lt;script src=&quot;/public/js/jquery-1.3.2.min.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&amp;lt;/script&gt;
+    &amp;lt;script src=&quot;/public/js/sessvars.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&amp;lt;/script&gt;
+
+        &amp;lt;script src=&quot;/public/map[site:map[title:Gavin Droider tagline:Gavin&amp;#39;s Blog author:map[name:Gao Xu email:blackdoor@yeah.net github:gavin1989 twitter:LaotouIChouchou feedburner:gavin.fleischer@gmail.com] navigation:[archive.html tags.html categories.html pages.html about.md] config:map[RuhohSpec:1 theme:twitter production_url:http://gavin1989.github.io posts:map[permalink:/:categories/:title/ summary_lines:20 latest:10 layout:post exclude:] pages:map[permalink:pretty layout:page exclude:]]] data:map[title:Gavin Droider tagline:Gavin&amp;#39;s Blog author:map[name:Gao Xu email:blackdoor@yeah.net github:gavin1989 twitter:LaotouIChouchou feedburner:gavin.fleischer@gmail.com] navigation:[archive.html tags.html categories.html pages.html about.md] config:map[RuhohSpec:1 theme:twitter production_url:http://gavin1989.github.io posts:map[permalink:/:categories/:title/ summary_lines:20 latest:10 layout:post exclude:] pages:map[permalink:pretty layout:page exclude:]]] layouts:map[default:map[_content:0xc2000e3870] page:map[layout:default _content:0xc2000e3930] post:map[layout:default _content:0xc2000e39f0]] theme:map[stylesheets:map[default:[bootstrap.min.css style.css] widgets:map[google_prettify:twitter-bootstrap.css]] javascripts:map[default:[]] manifest:map[author:Jacob Thornton and Mark Otto website:http://twitter.github.com/bootstrap]] urls:map[media:/assets/media theme:/assets/twitter theme_media:/assets/twitter/media theme_javascripts:/assets/twitter/javascripts theme_stylesheets:/assets/twitter/stylesheets base_path:/] db:map[pages:map[about.md:map[title:About Me description:&amp;lt;nil&amp;gt; _content:0xc2000e3f00 id:about.md layout:page permalink:pretty url:/about] archive.html:map[description:&amp;lt;nil&amp;gt; _content:0xc2000e3f60 id:archive.html layout:page permalink:pretty title:Archive url:/archive] categories.html:map[description:&amp;lt;nil&amp;gt; _content:0xc2000e3fc0 id:categories.html layout:page permalink:pretty title:Categories url:/categories] index.html:map[title:首页 description:&amp;lt;nil&amp;gt; _content:0xc20011a060 id:index.html layout:page permalink:pretty url:/] pages.html:map[description:&amp;lt;nil&amp;gt; _content:0xc20011a0c0 id:pages.html layout:page permalink:pretty title:Pages url:/pages] tags.html:map[description:&amp;lt;nil&amp;gt; _content:0xc20011a120 id:tags.html layout:page permalink:pretty title:Tags url:/tags]] navigation:[archive.html tags.html categories.html pages.html about.md] posts:map[dictionary:map[posts\revel-manual.md:map[title:Revel开发手册 date:2013-04-23 22:57:15 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2000e3660 layout:post permalink:2013/04/revel-manual.html tags:[Go revel] id:posts\revel-manual.md _date:2013-04-23 22:57:15 +0000 UTC url:/2013/04/revel-manual.html] posts\how-are-android-touch-events-delivered.md:map[date:2013-02-27 description:&amp;lt;nil&amp;gt; title:Android中view的Touch事件传递顺序 categories:[Android 源码分析] _content:0xc2001a2900 layout:post permalink:/2013/02/how-are-android-touch-events-delivered.html tags:[Android onTouch事件 view] id:posts\how-are-android-touch-events-delivered.md _date:2013-02-27 00:00:00 +0000 UTC url:/2013/02/how-are-android-touch-events-delivered.html] posts\java-lang-void.md:map[permalink:2013/02/java-lang-void.html tags:[Java Void] id:posts\java-lang-void.md _date:2013-02-28 10:06:39 +0000 UTC url:/2013/02/java-lang-void.html title:java.lang.Void类 date:2013-02-28 10:06:39 description:&amp;lt;nil&amp;gt; categories:[Java] _content:0xc20011a690 layout:post] posts\android-lint.md:map[title:android之lint date:2013-03-14 22:49:13 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc2000b5e70 layout:post permalink:2013/03/android-lint.html tags:[Android lint] id:posts\android-lint.md _date:2013-03-14 22:49:13 +0000 UTC url:/2013/03/android-lint.html] posts\android-processes-and_threads.md:map[title:Android之进程和线程 date:2013-03-11 17:40:19 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc20011a570 layout:post permalink:2013/03/android-processes-and_threads.html tags:[Android Process Thread] id:posts\android-processes-and_threads.md _date:2013-03-11 17:40:19 +0000 UTC url:/2013/03/android-processes-and_threads.html] posts\golang-tour-1.md:map[permalink:2013/04/golang-tour-1.html tags:[Go tour] id:posts\golang-tour-1.md _date:2013-04-16 22:52:51 +0000 UTC url:/2013/04/golang-tour-1.html title:Go语言之旅——基本概念（一） date:2013-04-16 22:52:51 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a21b0 layout:post] posts\ubuntu-golang-emacs-configuration.md:map[title:Ubuntu下golang的emacs配置 date:2013-04-19 23:10:58 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001b44b0 layout:post permalink:2013/04/ubuntu-golang-emacs-configuration.html tags:[emacs Go] id:posts\ubuntu-golang-emacs-configuration.md _date:2013-04-19 23:10:58 +0000 UTC url:/2013/04/ubuntu-golang-emacs-configuration.html] posts\state-of-thread.md:map[title:线程的状态 date:2013-02-28 10:29:17 description:&amp;lt;nil&amp;gt; categories:[Java 多线程] _content:0xc2001b4060 layout:post permalink:2013/02/state-of-thread.html tags:[Java 线程状态] id:posts\state-of-thread.md _date:2013-02-28 10:29:17 +0000 UTC url:/2013/02/state-of-thread.html] posts\thoughtworks-developer-reading-radar.md:map[title:[转载 ]] date:2013-04-22 13:43:19 description:&amp;lt;nil&amp;gt; categories:[读书] _content:0xc2001b4120 layout:post permalink:2013/04/thoughtworks-developer-reading-radar.html id:posts\thoughtworks-developer-reading-radar.md _date:2013-04-22 13:43:19 +0000 UTC tags:[] url:/2013/04/thoughtworks-developer-reading-radar.html] posts\android-intentservice.md:map[title:android之intentservice date:2013-02-28 14:10:33 description:&amp;lt;nil&amp;gt; categories:[Android 源码分析] _content:0xc2000e3480 layout:post permalink:2013/02/android-intentservice.html tags:[Android HandlerThread IntentService] id:posts\android-intentservice.md _date:2013-02-28 14:10:33 +0000 UTC url:/2013/02/android-intentservice.html] posts\blocking-queue.md:map[permalink:2013/02/blocking-queue.html tags:[Java 线程 阻塞队列] id:posts\blocking-queue.md _date:2013-02-28 13:59:39 +0000 UTC url:/2013/02/blocking-queue.html title:阻塞队列 date:2013-02-28 13:59:39 description:&amp;lt;nil&amp;gt; categories:[Java 多线程] _content:0xc20011a900 layout:post] posts\gavin-s-ndk.md:map[permalink:2013/04/gavin-s-ndk.html tags:[ndk] id:posts\gavin-s-ndk.md _date:2013-05-12 00:00:00 +0000 UTC url:/2013/04/gavin-s-ndk.html title:新篇章——NDK date:2013-05-12 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc20011aab0 layout:post] posts\golang-stein-gcd.md:map[title:Go——Stein算法求最大公约数 date:2013-04-17 23:28:07 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc20011afc0 layout:post permalink:2013/04/golang-stein-gcd.html tags:[Go stein] id:posts\golang-stein-gcd.md _date:2013-04-17 23:28:07 +0000 UTC url:/2013/04/golang-stein-gcd.html] posts\golang-tour-method-and-interface.md:map[title:Go语言之旅——方法与接口 date:2013-04-17 16:51:51 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a2780 layout:post permalink:2013/04/golang-tour-method-and-interface.html tags:[Go] id:posts\golang-tour-method-and-interface.md _date:2013-04-17 16:51:51 +0000 UTC url:/2013/04/golang-tour-method-and-interface.html] posts\revel-results.md:map[title:Revel框架——Result date:2013-04-27 16:00:20 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a2150 layout:post permalink:2013/04/revel-results.html tags:[Go revel] id:posts\revel-results.md _date:2013-04-27 16:00:20 +0000 UTC url:/2013/04/revel-results.html] posts\revel-routing.md:map[title:Revel框架——路由 date:2013-04-24 16:47:50 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a23c0 layout:post permalink:2013/04/revel-routing.html tags:[Go revel] id:posts\revel-routing.md _date:2013-04-24 16:47:50 +0000 UTC url:/2013/04/revel-routing.html] posts\revel-sharing-functionality.md:map[permalink:2013/04/revel-sharing-functionality.html tags:[Go revel] id:posts\revel-sharing-functionality.md _date:2013-04-23 22:37:40 +0000 UTC url:/2013/04/revel-sharing-functionality.html title:Revel框架——共享功能 date:2013-04-23 22:37:40 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a2c00 layout:post] posts\android-aidl.md:map[permalink:2013/03/android-aidl.html tags:[AIDL Android] id:posts\android-aidl.md _date:2013-03-10 19:57:28 +0000 UTC url:/2013/03/android-aidl.html title:Android之AIDL date:2013-03-10 19:57:28 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc20011a420 layout:post] posts\android-handler.md:map[permalink:2013/02/android-handler.html tags:[Android Handler Looper Message] id:posts\android-handler.md _date:2013-02-28 00:00:00 +0000 UTC url:/2013/02/android-handler.html title:Android之Handler date:2013-02-28 description:&amp;lt;nil&amp;gt; categories:[Android 源码分析] _content:0xc2000e32a0 layout:post] posts\property-of-thread.md:map[permalink:property-of-thread.html tags:[Java 守护线程 未捕获异常处理器 线程优先级] id:posts\property-of-thread.md _date:2013-02-28 10:45:48 +0000 UTC url:/property-of-thread.html title:线程的属性（优先级、守护线程、未捕获异常处理器） date:2013-02-28 10:45:48 description:&amp;lt;nil&amp;gt; categories:[Java 多线程] _content:0xc20011a930 layout:post] posts\revel-organization.md:map[title:Revel框架——结构布局 date:2013-04-23 17:57:39 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2000b5f60 layout:post permalink:2013/04/revel-organization.html tags:[Go revel] id:posts\revel-organization.md _date:2013-04-23 17:57:39 +0000 UTC url:/2013/04/revel-organization.html] posts\revel-session-and-flash.md:map[permalink:2013/04/revel-session-and-flash.html tags:[Go revel] id:posts\revel-session-and-flash.md _date:2013-04-27 13:47:00 +0000 UTC url:/2013/04/revel-session-and-flash.html title:Revel框架——Session域和Flash域 date:2013-04-27 13:47:00 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a26c0 layout:post] posts\revel-templates.md:map[title:Revel框架之模版（Template） date:2013-05-08 14:28:13 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a2ea0 layout:post permalink:2013/05/revel-templates.html tags:[Go revel] id:posts\revel-templates.md _date:2013-05-08 14:28:13 +0000 UTC url:/2013/05/revel-templates.html] posts\android-looper.md:map[title:Android之Looper date:2013-02-28 14:18:11 description:&amp;lt;nil&amp;gt; categories:[Android 源码分析] _content:0xc20011a2a0 layout:post permalink:2013/02/android-looper.html tags:[Android Handler Looper Message] id:posts\android-looper.md _date:2013-02-28 14:18:11 +0000 UTC url:/2013/02/android-looper.html] posts\android-service.md:map[permalink:2013/02/android-service.html tags:[Android Service] id:posts\android-service.md _date:2013-03-07 13:02:03 +0000 UTC url:/2013/02/android-service.html title:Android之Service date:2013-03-07 13:02:03 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc20011a750 layout:post] posts\golang-fibonacci.md:map[permalink:2013/04/golang-fibonacci.html tags:[fibonacci Go] id:posts\golang-fibonacci.md _date:2013-04-17 22:34:41 +0000 UTC url:/2013/04/golang-fibonacci.html title:Go——斐波那契数列 date:2013-04-17 22:34:41 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc20011ad20 layout:post] posts\golang-tour-concurrent.md:map[title:Go语言之旅——并发 date:2013-05-11 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a2570 layout:post permalink:2013/04/golang-tour-concurrent.html tags:[Go goroutine] id:posts\golang-tour-concurrent.md _date:2013-05-11 00:00:00 +0000 UTC url:/2013/04/golang-tour-concurrent.html] posts\revel-binding-parameters.md:map[permalink:2013/04/revel-binding-parameters.html tags:[Go revel] id:posts\revel-binding-parameters.md _date:2013-04-24 23:56:25 +0000 UTC url:/2013/04/revel-binding-parameters.html title:Revel框架——绑定参数 date:2013-04-24 23:56:25 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc20011aba0 layout:post] posts\revel-interceptors.md:map[title:Revel框架之拦截器 date:2013-05-08 15:16:51 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2000e3330 layout:post permalink:2013/05/revel-interceptors.html tags:[Go revel] id:posts\revel-interceptors.md _date:2013-05-08 15:16:51 +0000 UTC url:/2013/05/revel-interceptors.html] posts\android-bound-service.md:map[title:Android之Bound Service date:2013-03-10 00:35:09 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc20011a5d0 layout:post permalink:2013/03/android-bound-service.html tags:[Android Bound Service] id:posts\android-bound-service.md _date:2013-03-10 00:35:09 +0000 UTC url:/2013/03/android-bound-service.html] posts\android-lint-list-1.md:map[permalink:2013/03/android-lint-list-1.html tags:[Android lint] id:posts\android-lint-list-1.md _date:2013-05-11 00:00:00 +0000 UTC url:/2013/03/android-lint-list-1.html title:android工具之lint检测列表(一) date:2013-05-11 description:&amp;lt;nil&amp;gt; categories:[Android] _content:0xc2000e3e10 layout:post] posts\golang-tour-2.md:map[permalink:2013/04/golang-tour-2.html tags:[golang] id:posts\golang-tour-2.md _date:2013-04-17 14:24:37 +0000 UTC url:/2013/04/golang-tour-2.html title:Go语言之旅——基本概念（二） date:2013-04-17 14:24:37 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc2001a2390 layout:post] posts\interrupt-thread.md:map[title:中断线程 date:2013-02-28 10:26:32 description:&amp;lt;nil&amp;gt; categories:[Java 多线程] _content:0xc2001a2ab0 layout:post permalink:2013/02/interrupt-thread.html tags:[Java 中断线程] id:posts\interrupt-thread.md _date:2013-02-28 10:26:32 +0000 UTC url:/2013/02/interrupt-thread.html] posts\java-lang-thread.md:map[permalink:2013/02/java-lang-thread.html tags:[Java Thread] id:posts\java-lang-thread.md _date:2013-02-28 10:14:07 +0000 UTC url:/2013/02/java-lang-thread.html title:java.lang.Thread date:2013-02-28 10:14:07 description:&amp;lt;nil&amp;gt; categories:[Java 多线程] _content:0xc20011a330 layout:post] posts\revel-concepts.md:map[permalink:2013/04/revel-concepts.html tags:[Go revel] id:posts\revel-concepts.md _date:2013-05-12 00:00:00 +0000 UTC url:/2013/04/revel-concepts.html title:Revel框架——基本概念 date:2013-05-12 description:&amp;lt;nil&amp;gt; categories:[Go] _content:0xc20011af60 layout:post] posts\thread-sync.md:map[permalink:2013/02/thread-sync.html tags:[Java 线程同步] id:posts\thread-sync.md _date:2013-02-28 11:05:44 +0000 UTC url:/2013/02/thread-sync.html title:线程同步 date:2013-02-28 11:05:44 description:&amp;lt;nil&amp;gt; categories:[Java 多线程] _content:0xc2001b42d0 layout:post]] tags:map[Android:0xc200091140 Message:0xc200091280 Service:0xc2000918c0 线程同步:0xc200091c40 emacs:0xc200091f00 ndk:0xc200150240 Java:0xc2000913c0 中断线程:0xc200091b00 onTouch事件:0xc200091c80 HandlerThread:0xc200150100 守护线程:0xc200091400 lint:0xc200091a80 view:0xc200091cc0 Process:0xc200091e40 stein:0xc200150280 AIDL:0xc2000ebfc0 线程优先级:0xc200091480 Go:0xc200091640 Bound Service:0xc200091a00 Handler:0xc200091200 revel:0xc200091680 fibonacci:0xc200091900 Thread:0xc200091b80 线程状态:0xc200091fc0 Looper:0xc200091240 未捕获异常处理器:0xc200091440 IntentService:0xc200150140 goroutine:0xc200091980 golang:0xc200091ac0 Void:0xc200091d80 tour:0xc200091e80 线程:0xc200150180 阻塞队列:0xc200150200] categories:map[Android:0xc2000911c0 源码分析:0xc2000912c0 Java:0xc200091500 多线程:0xc200091600 Go:0xc200091700 读书:0xc200150080] chronological:[posts\gavin-s-ndk.md posts\revel-concepts.md posts\golang-tour-concurrent.md posts\android-lint-list-1.md posts\revel-interceptors.md posts\revel-templates.md posts\revel-results.md posts\revel-session-and-flash.md posts\revel-binding-parameters.md posts\revel-routing.md posts\revel-manual.md posts\revel-sharing-functionality.md posts\revel-organization.md posts\thoughtworks-developer-reading-radar.md posts\ubuntu-golang-emacs-configuration.md posts\golang-stein-gcd.md posts\golang-fibonacci.md posts\golang-tour-method-and-interface.md posts\golang-tour-2.md posts\golang-tour-1.md posts\android-lint.md posts\android-processes-and_threads.md posts\android-aidl.md posts\android-bound-service.md posts\android-service.md posts\android-looper.md posts\android-intentservice.md posts\blocking-queue.md posts\thread-sync.md posts\property-of-thread.md posts\state-of-thread.md posts\interrupt-thread.md posts\java-lang-thread.md posts\java-lang-void.md posts\android-handler.md posts\how-are-android-touch-events-delivered.md] collated:[0xc2001b45a0]]]]&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&amp;lt;/script&gt;
+
+&amp;lt;/head&gt;&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
+
+<p>并且包含它的模版像下面这样：
+<pre><code></p>
+
+<p></code></pre></p>
+
+<h2><a style="display: block;" name="自定义函数" href="#自定义函数"></a>自定义函数</h2>
+
+<p>应用可以注册在模版中使用的自定义函数。<br />
+这里有一个例子：
+<pre><code>func init() {
+    revel.TemplateFuncs[&ldquo;eq&rdquo;] = func(a, b interface{}) bool { return a == b }
+}</code></pre></p>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/2013/05/revel-interceptors.html" title="Revel框架之拦截器">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/2013/04/revel-results.html" title="Revel框架——Result">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2013-05-08 14:28:13</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#Go-ref">Go <span>17</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/tags/#Go-ref">Go <span>16</span></a>
+</li>
+    
+      <li>
+  <a href="/tags/#revel-ref">revel <span>10</span></a>
+</li>
+    
+    </ul>
+  </div>
+</div>
+
+      </div>
+
+      <footer>
+        <p>&copy; Gao Xu 2013 
+          with help from <a href="http://github.com/wendal/gor" target="_blank" title="Gor -- Fast Blog">Gor</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+		  and Idea from <a href="http://ruhoh.com" target="_blank" title="The Definitive Technical Blogging Framework">ruhoh</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+<script>
+  var pres = document.getElementsByTagName("pre");
+  for (var i=0; i < pres.length; ++i) {
+    pres[i].className = "prettyprint linenums";
+  }
+  prettyPrint();
+</script>
+
+    
+<script>
+    var _gaq=[['_setAccount','UA-123-12'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+  </body>
+</html>

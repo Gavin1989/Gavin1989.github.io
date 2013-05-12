@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>线程的属性（优先级、守护线程、未捕获异常处理器）</title>
+  
+    <meta name="author" content="Gao Xu">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css" type="text/css" rel="stylesheet" media="all">
+ 
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">Gavin Droider</a>
+          <ul class="nav">
+            
+              
+
+
+  <li><a href="/archive">Archive</a></li>
+
+
+            
+              
+
+
+  <li><a href="/tags">Tags</a></li>
+
+
+            
+              
+
+
+  <li><a href="/categories">Categories</a></li>
+
+
+            
+              
+
+
+  <li><a href="/pages">Pages</a></li>
+
+
+            
+              
+
+
+  <li><a href="/about">About Me</a></li>
+
+
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+  <h1>线程的属性（优先级、守护线程、未捕获异常处理器） </h1>
+</div>
+
+<div class="row">
+  <div class="span8">
+    <ul>
+<li><p>线程优先级：每条线程都有一个优先级，默认情况下，主线程的优先级是5（NOR_PRIORITY），子线程继承它父线程的优先级。可以用setPriority方法给一条线程设置优先级（MIN_PRIORITY=1,MAX_PRIORITY=10）。<br />
+每当线程调度器有机会选择新线程时，它首先会选择具有较高优先级的线程。但是，线程优先级是高度依赖于系统的。当虚拟机依赖于宿主机平台的线程实现机制时，Java线程的优先级被映射到宿主机平台的优先级上，这种映射在常见的操作系统上都不能很好地实现。比如Windows有7个优先级，有几个Java优先级将映射到相同的操作系统优先级。又比如在Sun公司为Linux提供的Java虚拟机里，所有的线程都有相同的优先级（优先级被忽略）。还有，Android中线程优先级是从-20到19.<br />
+构建程序时，不要将功能的正确性依赖于优先级。如果确实要使用优先级，应该避免初学者常犯的一个错误：如果有几个高优先级的线程没有进入非活动状态，低优先级的线程可能永远也不能执行。</p></li>
+
+<li><p>守护线程：可以调用t.setDaemon(true)将线程转换为守护线程。守护线程的唯一作用是为其它线程提供服务。比如计时线程。当只剩下守护线程时，虚拟机就退出了。<br />
+使用守护线程是应该考虑的一个问题：守护线程应该永远不去访问固有资源，比如文件、数据库等，因为它会在任何时候甚至在一个操作的中间发生中断。</p></li>
+
+<li><p>未捕获异常处理器：线程的run方法不能抛出任何被检测的（checked）异常，但是，不被检测的（unchecked）异常会导致线程终止。在这种情况下，线程就会死亡。<br />
+但是，不需要任何catch子句来处理可以被传播的异常。在线程死亡之前，异常被传递到一个用于未捕获异常的处理器。<br />
+该处理器必须属于一个实现了Thread.UncaughtExceptionHandler接口的类。可以用setUncaughtExceptionHandler方法为任何线程安装一个处理器。也可以用Thread类的静态方法setDefaultUncaughtExceptionHandler为所有线程安装一个默认的处理器。替换处理器的好处就是可以使用日志API发送未捕获的异常的报告到文件。<br />
+如果不安装默认的处理器，默认的处理器就为空。但是，如果不为独立的线程安装处理器，此时的处理器就是该线程的ThreadGroup（它实现了UncaughtExceptionHandler接口）。<br />
+ThreadGroup类实现了Thread.UncaughtExceptionHandler接口，它的uncaughtException方法做如下操作：</p>
+
+<ol>
+<li>如果该线程组有父线程组，那么父线程组的uncaughtException方法被调用。</li>
+<li>否则，如果Thread.getDefaultExceptionHandler方法返回一个非空的处理器，则调用该处理器。</li>
+<li>否则，如果Throwable是ThreadDeath的一个实例（ThreadDeath对象由stop方法产生，而该方法已过时），什么都不做。</li>
+<li>否则，线程的名字以及Throwable的栈踪迹被输出到System.err上。</li>
+</ol></li>
+</ul>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/2013/02/thread-sync.html" title="线程同步">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/2013/02/state-of-thread.html" title="线程的状态">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2013-02-28 10:45:48</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#Java-ref">Java <span>7</span></a>
+</li>
+    
+      <li>
+  <a href="/categories/#%E5%A4%9A%E7%BA%BF%E7%A8%8B-ref">多线程 <span>6</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/tags/#Java-ref">Java <span>7</span></a>
+</li>
+    
+      <li>
+  <a href="/tags/#%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B-ref">守护线程 <span>1</span></a>
+</li>
+    
+      <li>
+  <a href="/tags/#%E6%9C%AA%E6%8D%95%E8%8E%B7%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E5%99%A8-ref">未捕获异常处理器 <span>1</span></a>
+</li>
+    
+      <li>
+  <a href="/tags/#%E7%BA%BF%E7%A8%8B%E4%BC%98%E5%85%88%E7%BA%A7-ref">线程优先级 <span>1</span></a>
+</li>
+    
+    </ul>
+  </div>
+</div>
+
+      </div>
+
+      <footer>
+        <p>&copy; Gao Xu 2013 
+          with help from <a href="http://github.com/wendal/gor" target="_blank" title="Gor -- Fast Blog">Gor</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+		  and Idea from <a href="http://ruhoh.com" target="_blank" title="The Definitive Technical Blogging Framework">ruhoh</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+<script>
+  var pres = document.getElementsByTagName("pre");
+  for (var i=0; i < pres.length; ++i) {
+    pres[i].className = "prettyprint linenums";
+  }
+  prettyPrint();
+</script>
+
+    
+<script>
+    var _gaq=[['_setAccount','UA-123-12'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+  </body>
+</html>

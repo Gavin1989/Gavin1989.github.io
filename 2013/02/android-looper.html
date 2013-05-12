@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>android之intentservice</title>
+    <title>Android之Looper</title>
   
     <meta name="author" content="Gao Xu">
 
@@ -78,73 +78,71 @@
 
       <div class="content">
         <div class="page-header">
-  <h1>android之intentservice </h1>
+  <h1>Android之Looper </h1>
 </div>
 
 <div class="row">
   <div class="span8">
-    <p>IntentService是一种用于处理异步请求（表现为Intent）的服务基类。客户通过调用Context.startService(Intent)发送请求；根据需要启动服务，依次使用工作者线程处理每一个Intent，并且在工作完成后终止自身。<br />
-这种“工作队列处理器”模式通常被用来从一个应用程序的主线程卸载任务。IntentService类的存在是为了简化这种模式，并且照顾了技术性的部分。要使用它，需要继承IntentService类并且实现onHandleIntent(Intent)方法。IntentService将会接收到这些Intent，运行一条工作者线程，并且在适当的时候停止服务。<br />
-所有的请求都是在一个单一的工作者线程中处理的，尽管处理过程可能需要很长时间（不会阻塞应用程序的主线程），但是每次只能有一个请求会被处理。<br />
-首先，看它提供的一个构造方法：
-<pre>public IntentService(String name) {
-    super();
-    mName = name;
-}</pre>
-参数name被用于命名即将用到的工作者线程，它的重要性仅用于调试。这里需要注意的一点是，Service的实例化是系统来完成的，并且系统是用无参的构造方法来实例化Service的。所以，你的子类必须是无参的，然后在无参构造方法里调用super(&ldquo;name&rdquo;)。<br />
-再看onCreate方法：
-<pre>@Override
-public void onCreate() {
-    super.onCreate();
-    HandlerThread thread = new HandlerThread(&ldquo;IntentService[&rdquo; + mName + &ldquo;]&rdquo;);
-    thread.start();
-    mServiceLooper = thread.getLooper();
-    mServiceHandler = new ServiceHandler(mServiceLooper);
-}</pre>
-其中的ServiceHandler是IntentService类的内部类：
-<pre>private final class ServiceHandler extends Handler {
-    public ServiceHandler(Looper looper) {
-        super(looper);
+    <p>Looper：循环器，是一个用于使线程运行一个消息（Message）循环的类。线程默认没有关联的消息循环，在创建它之前，在将要运行循环的线程中调用prepare方法，然后loop方法会处理消息直到循环结束。<br />
+绝大多数消息循环是通过Handler类来Looper交互的。<br />
+下面是实现了Looper的线程的一个典型例子，使用分离的prepare方法和loop方法来创建一个用于跟Looper沟通的初始Handler。<br />
+<pre><code>class LooperThread extends Thread {
+    public Handler mHandler;
+    public void run() {
+        Looper.prepare();
+        mHandler = new Handler() {
+            public void handleMessage(Message msg) {
+                // process incoming messages here
+            }
+        };
+        Looper.loop();
     }
-    @Override
-    public void handleMessage(Message msg) {
-        onHandleIntent((Intent)msg.obj);
-        stopSelf(msg.arg1);
+}</code></pre>
+先看准备工作的prepare方法：
+<pre><code>public static final void prepare() {
+    if (sThreadLocal.get() != null) {
+        throw new RuntimeException(&ldquo;Only one Looper may be created per thread&rdquo;);
     }
-}</pre>
-在onCreate方法里，创建并启动了一条工作线程。然后使用工作线程的Looper构造了一个Handler，这个Handler将循环处理请求。<br />
-根据Service的生命周期，我们再看onStartCommand方法：
-<pre>@Override
-public int onStartCommand(Intent intent, int flags, int startId) {
-    onStart(intent, startId);
-    return mRedelivery ? START_REDELIVER_INTENT : START_NOT_STICKY;
-}</pre>
-后面的返回值，可以看看Service类的相关内容。onStartCommand方法调用了onStart方法。再跟到onStart方法：
-<pre>@Override
-public void onStart(Intent intent, int startId) {
-    Message msg = mServiceHandler.obtainMessage();
-    msg.arg1 = startId;
-    msg.obj = intent;
-    mServiceHandler.sendMessage(msg);
-}</pre>
-每次调用Context.startService(Intent intent)，都会将一个请求（Message，包含一个Intent，并有一个id）添加到消息队列（工作线程的循环队列，相关内容可以看Handler源码）。处理完所有请求后，就会停止服务。<br />
-对于onHandleIntent(Intent intent)方法，官方注释是这样说的：<br />
-这个方法运行在工作线程，用于处理一个请求。同一时间只有一个Intent被处理，但是处理过程发生在一个独立于其它应用逻辑的工作线程。因此，如果这个代码块要执行很长时间，它将阻塞其它在同一个IntentService上的请求，除此之外，它不会阻塞其它任何东西。<br />
-另外，IntentService实现了一个默认的onBind方法，默认返回null。</p>
+    sThreadLocal.set(new Looper());
+}</code></pre>
+每条线程只能绑定一个Looper，否则会抛出RuntimeException异常。如果不调用prepare方法，sThreadLocal.get()就会返回null。注意这是个静态方法，在最后一行中绑定了一个做为Looper的线程。怎么绑定的呢，看看Looper的一个私有无参构造方法：
+<pre><code>private Looper() {
+    mQueue = new MessageQueue();
+    mRun = true;
+    mThread = Thread.currentThread();
+}</code></pre>
+构造方法里初始化了一个消息队列、一个运行状态的标志以及绑定一个线程（创建者所在的线程）。prepare方法给了一个在真正的循环开始之前，参照Looper创建一个Handler的机会。注意：在run方法中初始化Handler之前，必须调用Looper.prepare()，不然会抛出一个运行时异常，因为Handler需要一个从Looper得到的消息队列（即构造方法里面的mQueue）。调用prepare方法后一定要调用loop方法，并且调用quit方法退出循环。<br />
+接下来，看看在当前线程里运行一个消息队列的loop方法，用完后一定要调用quit方法结束循环：
+<pre><code>public static final void loop() {
+    Looper me = myLooper();
+    MessageQueue queue = me.mQueue;
+    while (true) {
+        Message msg = queue.next(); // might block
+        if (msg != null) {
+            if (msg.target == null) {
+                // No target is a magic identifier for the quit message.
+                return;
+            }
+            msg.target.dispatchMessage(msg);
+            msg.recycle();
+        }
+    }
+}</code></pre>
+高潮来了，上面说过，Looper的mQueue是Handler使用的消息队列，loop方法启动一个死循环从队列中获取数据，当队列中没有数据时，queue.next()会阻塞。当有数据时，msg.target（即Handler）就会调用dispatchMessage方法，进而调用Handler的handleCallback或者handlerMessage方法。从这些也可以知道，如果Handler是在子线程的run方法中创建（之前必须调用Looper.prepare()）的，那么这个Handler的handleMessage或者handleCallback方法就是运行在子线程的。</p>
 
     <hr>
     <div class="pagination">
       <ul>
         <ul>
           
-            <li class="prev"><a href="/2013/02/android-looper.html" title="Android之Looper">&larr; Previous</a></li>
+            <li class="prev"><a href="/2013/02/android-service.html" title="Android之Service">&larr; Previous</a></li>
           
           
 
             <li><a href="/archive">Archive</a></li>
 
           
-            <li class="next"><a href="/2013/02/blocking-queue.html" title="阻塞队列">Next &rarr;</a></li>
+            <li class="next"><a href="/2013/02/android-intentservice.html" title="android之intentservice">Next &rarr;</a></li>
           
           
         </ul>
@@ -170,7 +168,7 @@ public void onStart(Intent intent, int startId) {
   
   <div class="span4">
     <h4>Published</h4>
-    <div class="date"><span>2013-02-28 14:10:33</span></div>
+    <div class="date"><span>2013-02-28 14:18:11</span></div>
     <br>
     <h4>Categories</h4>
     <ul class="tag_box">
@@ -193,11 +191,15 @@ public void onStart(Intent intent, int startId) {
 </li>
     
       <li>
-  <a href="/tags/#HandlerThread-ref">HandlerThread <span>1</span></a>
+  <a href="/tags/#Handler-ref">Handler <span>2</span></a>
 </li>
     
       <li>
-  <a href="/tags/#IntentService-ref">IntentService <span>1</span></a>
+  <a href="/tags/#Looper-ref">Looper <span>2</span></a>
+</li>
+    
+      <li>
+  <a href="/tags/#Message-ref">Message <span>2</span></a>
 </li>
     
     </ul>
