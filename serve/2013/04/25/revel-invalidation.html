@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Revel框架——参数验证</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Droider</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+     
+                <h2>Revel框架——参数验证</h2>
+<p class="meta">26 Apr 2013</p>
+
+<div id="post">
+<h2 id='id63'>参数验证</h2>
+
+<p>Revel为参数验证提供了内建的功能。包括几个部分：</p>
+
+<p>* 一个Validation上下文收集和管理验证错误（包含键和信息）。 * 检查并把错误放到上下文中的助手运行。 * 一个模版函数通过key从Validation上下文得到错误信息。</p>
+
+<p>比较深入的例子参见<a href='http://robfig.github.io/revel/samples/validation.html'>验证示例</a></p>
+
+<h2 id='id64'>内嵌错误信息</h2>
+
+<p>下面的例子演示了使用内嵌错误信息验证字段：</p>
+
+<pre><code>func (c MyApp) SaveUser(username string) revel.Result {
+	// Username字段是必须的，并且它的长度为4-15个字母（包含边界）。
+	c.Validation.Required(username)
+	c.Validation.MaxSize(username, 15)
+	c.Validation.MinSize(username, 4)
+	c.Validation.Match(username, regexp.MustCompile(&quot;^\\w*$&quot;))
+
+	if c.Validation.HasErrors() {
+		// 在flash上下文中存储验证错误并重定向。
+		c.Validation.Keep()
+		c.FlashParams()
+		return c.Redirect(Hotels.Settings)
+	}
+
+	// 所有数据已验证!
+	...
+}</code></pre>
+
+<p>一步一步看：</p>
+
+<p>1. 验证username上的四个不同条件（必需的、最小长度、最大长度、匹配）。 2. 每一次验证都返回一个ValidationResult，失败的ValidationResult被记录在Validation上下文中。 3. 作为构建app的一部分，Revel会记录验证成功的变量名，并在Validation上下文中使用其作为默认的key（以后用来查询）。 4. 当上下文非空时Validation.HasErrors()返回true。 5. Validation.Keep()告诉Revel将ValidationErrors串行化到Flash Cookie。 6. Revel重定向到Hotels.Settings action。</p>
+
+<p>Hotels.Settings action提供一个模版：</p>
+
+<pre><code>...
+Please fix errors marked below!
+...
+&lt;p class=&quot;error&quot;&gt;
+Username:
+&lt;input name=&quot;username&quot; value=&quot;&quot;/&gt;
+&lt;pan class=&quot;error&quot;&gt;&lt;/span&gt;
+&lt;/p&gt;</code></pre>
+
+<p>它做了三件事情：</p>
+
+<p>1. 如果username字段有错误，则为username键检查errors映射表。 2. 将flash中的username参数值预填到输入框。 3. 在下面显示错误信息。（我们没有指定任何错误信息，因为每个验证函数都提供了一个默认值）。</p>
+
+<p><strong>注意：</strong>使用验证错误框架的域模版助手函数使得写模版更方便一点。</p>
+
+<h2 id='id65'>顶部错误信息</h2>
+
+<p>如果错误信息被收集在一个单独的地方，模版还可以简化（例如屏幕上方的红色大方块）。<br />这与上面的例子仅有两个不同点：</p>
+
+<p>1. 我们指定了一个Message代替ValidationError的Key。 2. 我们在表格的上方打印所有信息。</p>
+
+<p>下面是代码：</p>
+
+<pre><code>func (c MyApp) SaveUser(username string) revel.Result {
+	// Username字段是必须的，并且它的长度为4-15个字母（包含边界）。
+	c.Validation.Required(username).Message(&quot;Please enter a username&quot;)
+	c.Validation.MaxSize(username, 15).Message(&quot;Username must be at most 15 characters long&quot;)
+	c.Validation.MinSize(username, 4).Message(&quot;Username must be at least 4 characters long&quot;)
+	c.Validation.Match(username, regexp.MustCompile(&quot;^\\w*$&quot;)).Message(&quot;Username must be all letters&quot;)
+
+	if c.Validation.HasErrors() {
+	    // 在flash上下文中存储验证错误并重定向。
+	    c.Validation.Keep()
+	    c.FlashParams()
+	    return c.Redirect(Hotels.Settings)
+	}
+
+	// 所有数据已验证!
+	...
+}</code></pre>
+
+<p>此时，模版代码为：</p>
+
+<pre><code>...
+
+&lt;div class=&quot;error&gt;
+&lt;ul&gt;
+
+	&lt;li&gt; 
+
+&lt;/ul&gt;
+&lt;/div&gt;
+
+...</code></pre>
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

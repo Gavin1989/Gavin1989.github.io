@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Revel框架之模版（Template）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Droider</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+     
+                <h2>Revel框架之模版（Template）</h2>
+<p class="meta">08 May 2013</p>
+
+<div id="post">
+<h2 id='id68'>模版</h2>
+
+<p>Revel使用<a href='http://www.golang.org/pkg/text/template/'>Go模版</a>，它从两个目录搜索模版：</p>
+
+<p>* 应用的views目录（以及所有的子文件夹）。 * Revel自己的templates目录。</p>
+
+<p>Revel提供了错误页面的模版（在开发模式下显示友好的编译错误），不过应用需要创建一个同名的模版来重写它们，比如app/views/errors/500.html。</p>
+
+<h2 id='render_context'>Render Context</h2>
+
+<p>Revel使用RenderArgs数据映射表来执行模版。除应用提供的数据以外，Revel还提供以下两项：</p>
+
+<p>* “errors”——通过<a href='http://robfig.github.io/revel/docs/godoc/validation.html#Validation.ErrorMap'>Validation.ErrorMap</a>返回的map。 * “flash”——通过之前的请求闪存的数据。</p>
+
+<h2 id='id69'>模版函数</h2>
+
+<p>Go提供<a href='http://www.golang.org/pkg/text/template/#Functions'>一些在你的模版中使用的函数</a>。Revel增加了一些。阅读下面的文档，或者<a href='http://robfig.github.io/revel/docs/godoc/template.html#variables'>查看它们的源代码</a>。</p>
+
+<h3 id='eq'>eq</h3>
+
+<p>简单地测试“a == b”。<br />示例：<br /><code>&lt;div class=&quot;message you&quot;&gt;</code></p>
+
+<h3 id='set'>set</h3>
+
+<p>在给定的Context中设置一个变量。<br />示例：</p>
+
+<pre><code>&lt;h1&gt;&lt;/h1&gt;</code></pre>
+
+<h3 id='append'>append</h3>
+
+<p>在给定的Context中，向一个数组中添加一个元素，或者创建一个数组。<br />示例：</p>
+
+<pre><code>  &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/public/&quot;&gt;</code></pre>
+
+<h3 id='field'>field</h3>
+
+<p>输入字段的一个辅助函数：<br />给定一个字段名，它返回一个包含下列成员的结构体：</p>
+
+<p>* Id：字段名，转换为适当的HTML元素ID。 * Name：字段名。 * Value：该字段在当前RenderArgs中的值。 * Flash：闪存中该字段的值。 * Error：所有与该字段有关的错误信息。 * ErrorClass：如果有错误，则为&#8221;hasError&#8221;，否则为&#8221;&#8220;；</p>
+
+<p><a href='http://robfig.github.io/revel/docs/godoc/field.html'>查看文档</a>。<br />示例：</p>
+
+<pre><code>  &lt;p class=&quot;&quot;&gt;
+    &lt;strong&gt;Check In Date:&lt;/strong&gt;
+    &lt;input type=&quot;text&quot; size=&quot;10&quot; name=&quot;&quot; class=&quot;datepicker&quot; value=&quot;&quot; &gt;
+    * &lt;span class=&quot;error&quot;&gt;&lt;/span&gt;
+  &lt;/p&gt;</code></pre>
+
+<h3 id='option'>option</h3>
+
+<p>结合字段助手，协助构建HTML option元素。<br />示例：</p>
+
+<pre><code>&lt;select name=&quot;&quot;&gt;
+  
+  
+  
+&lt;/select&gt;</code></pre>
+
+<h3 id='radio'>radio</h3>
+
+<p>结合字段助手，协助构建HTML单选输入元素。<br />示例：</p>
+
+<pre><code>   Smoking
+   Non smoking</code></pre>
+
+<h2 id='nl2br'>nl2br</h2>
+
+<p>换行转换为HTML断行。<br />示例：</p>
+
+<pre><code>You said:
+&lt;div class=&quot;comment&quot;&gt;&lt;/div&gt;  </code></pre>
+
+<h3 id='pluralize'>pluralize</h3>
+
+<p>辅助输入正确的单词复数。<br />示例：<br /><code>There are  comment</code></p>
+
+<h2 id='including'>Including</h2>
+
+<p>Go模版允许包含模版，例如：<br /><code> 
+这里需要注意两点：</code></p>
+
+<p>* 路径相对于app/views。 * 所有被包含的模版必须放在根目录下（app/views），这是一个（希望是暂时的）限制。</p>
+
+<h2 id='id70'>提示</h2>
+
+<p>示例应用包括Revel都试图示范有效地利用Go模版。详情请参考：</p>
+
+<p>* revel/samples/booking/app/views/header.html * revel/samples/booking/app/views/Hotels/Book.html</p>
+
+<p>模版自身可以利用辅助函数设置title和外部的样式。<br />例如，header可以像下面这样：</p>
+
+<pre><code>&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;&lt;/title&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;
+    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;screen&quot; href=&quot;/public/css/main.css&quot;&gt;
+    &lt;link rel=&quot;shortcut icon&quot; type=&quot;image/png&quot; href=&quot;/public/img/favicon.png&quot;&gt;
+    
+      &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/public/&quot;&gt;
+    
+    &lt;script src=&quot;/public/js/jquery-1.3.2.min.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;/public/js/sessvars.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+    
+      &lt;script src=&quot;/public/&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+    
+  &lt;/head&gt;</code></pre>
+
+<p>并且包含它的模版像下面这样：</p>
+
+<h2 id='id71'>自定义函数</h2>
+
+<p>应用可以注册在模版中使用的自定义函数。<br />这里有一个例子：</p>
+
+<pre><code>func init() {
+    revel.TemplateFuncs[&quot;eq&quot;] = func(a, b interface{}) bool { return a == b }
+}</code></pre>
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

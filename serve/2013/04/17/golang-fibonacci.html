@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Go——斐波那契数列</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Droider</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+     
+                <h2>Go——斐波那契数列</h2>
+<p class="meta">18 Apr 2013</p>
+
+<div id="post">
+<p>由于Go语言支持闭包，所以实现的斐波那契数列算法非常简洁：</p>
+
+<pre><code>package main
+
+// fibonacci is a function that returns
+// a function that returns an int.
+func fibonacci() func() int {
+	a, b := 0, 1
+	return func() int {
+	    a, b = b, a+b
+	    return a
+	}
+}
+
+func main() {
+	f := fibonacci()
+	for i := 0; i &lt; 10; i++ {
+    	println(f())
+	}
+}</code></pre>
+
+<p>下面附上Java版，这里维护了一个数组：</p>
+
+<pre><code>package algs;
+
+public class Fibonacci {
+	private static long[] FN = new long[100];
+	
+	public static void main(String[] args) {
+		for(int i = 0; i &lt; 10; i++)	{
+			System.out.println(F(i));
+		}	
+	}
+	
+	private static long F(int N){
+		if(N == 0) return 0;
+		if(N == 1) {
+			FN[N] = 1;
+			return 1;
+		}
+		FN[N] = FN[N-1] + FN[N-2];
+		return FN[N];
+	}
+}</code></pre>
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

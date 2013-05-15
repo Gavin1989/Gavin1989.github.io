@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Revel框架——绑定参数</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Droider</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+     
+                <h2>Revel框架——绑定参数</h2>
+<p class="meta">25 Apr 2013</p>
+
+<div id="post">
+<h2 id='id58'>绑定参数</h2>
+
+<p>Revel尝试尽可能地简单地将参数转换为它们期望的Go类型。这种从字符串到其他类型的转换被称为“数据绑定”。</p>
+
+<h2 id='id59'>参数</h2>
+
+<p>所有的请求参数都被集中在了一个单独的Params对象中。其中包括：</p>
+
+<p>* URL路径参数 * URL查询参数 * 表格数据（multipart或非multipart） * 文件上传</p>
+
+<p>这里是定义（<a href='http://robfig.github.io/revel/docs/godoc/binder.html'>godoc</a>）:</p>
+
+<pre><code>type Params struct {
+	url.Values
+    Files map[string][]*multipart.FileHeader
+}</code></pre>
+
+<p>内嵌的url.Values(<a href='http://www.golang.org/pkg/net/url/#Values'>godoc</a>)提供了一个简单值的存取器，但是开发者会发现使用Revel对任意非字符串值的数据绑定机制更简单。</p>
+
+<h2 id='action'>Action参数</h2>
+
+<p>参数可以直接被接收为action的方法参数，例如：</p>
+
+<pre><code>func (c AppController) Action(name string, ids []int, user User, img []byte) revel.Result {
+	...
+}</code></pre>
+
+<p>在调用action之前，Revel要求它的Binder将这些参数转换为请求的数据类型。如果转换不成功，参数将会被赋予它的类型的零值。</p>
+
+<h2 id='binder'>Binder</h2>
+
+<p>绑定一个参数到一个数据类型，就要使用Revel的Binder（<a href='http://robfig.github.io/revel/docs/godoc/binder.html'>godoc</a>）。它像下面例子中展示的那样整合参数对象：</p>
+
+<pre><code>func (c SomeController) Action() revel.Result {
+	var ids []int = c.Params.Bind(&quot;ids[]&quot;, reflect.TypeOf([]int{}))
+    ...
+}</code></pre>
+
+<p>下列的数据类型支持拆箱：</p>
+
+<p>* 所有宽度的int * 布尔值 * 所有支持类型的指针 * 所有支持类型的切片 * struct * 用于日期和时间的time.Time * 用于文件上传的<em>os.File,<span />byte,io.Reader,io.ReadSeeker</em></p>
+
+<p>下面的部分描述了这些类型的语法。如果需要更多有用的信息，请参阅<a href='http://robfig.github.io/revel/docs/src/binder.html'>源码</a></p>
+
+<h3 id='id60'>布尔值</h3>
+
+<p>字符串“true”，“on”和“1”都被认为是true。其它绑定的值将是false。</p>
+
+<h3 id='slices'>Slices</h3>
+
+<p>Revel支持两种绑定Slice的语法：有序的和无序的。<br />有序的：</p>
+
+<pre><code>?ids[0]=1
+&amp;ids[1]=2
+&amp;ids[3]=4</code></pre>
+
+<p>slice中的结果为<span />int{1,2,0,4}<br />无序的：</p>
+
+<pre><code>?ids[]=1
+&amp;ids[]=2
+&amp;ids[]=3</code></pre>
+
+<p>slice中的结果为<span />int{1,2,3} <strong>注意：</strong>当绑定一个struct的slice时，应该仅仅使用有序slice：</p>
+
+<pre><code>?user[0].Id=1
+&amp;user[0].Name=rob
+&amp;user[1].Id=2
+&amp;user[1].Name=jenny</code></pre>
+
+<h3 id='struct'>Struct</h3>
+
+<p>使用一个简单的句点（.）来绑定struct：</p>
+
+<pre><code>?user.Id=1
+&amp;user.Name=rob
+&amp;user.Friends[]=2
+&amp;user.Friends[]=3
+&amp;user.Father.Id=5
+&amp;user.Father.Name=Hermes</code></pre>
+
+<p>将要绑定的结构定义为：</p>
+
+<pre><code>type User struct {
+	Id int
+    Name string
+    Friends []int
+    Father User
+}</code></pre>
+
+<p><strong>注意：</strong>为了方便绑定，属性必须是可导出的。</p>
+
+<h3 id='id61'>日期和时间</h3>
+
+<p>内建的日期时间格式为SQL标准时间格式<span>&#8220;2006-01-02&#8221;,&#8221;2006-01-02 15:04&#8221;</span>。<br />使用<a href='http://golang.org/pkg/time/#constants'>官方模式</a>可以为应用添加更多的格式。简单点的方法是：添加识别模式到TimeFormats变量即可，像这样：</p>
+
+<pre><code>func init() {
+	revel.TimeFormats = append(revel.TimeFormats, &quot;01/02/2006&quot;)
+}</code></pre>
+
+<h3 id='id62'>文件上传</h3>
+
+<p>文件上传可以绑定到下列任意的类型：</p>
+
+<p>* <em>os.File</em> <span />byte * io.Reader * io.ReadSeeker</p>
+
+<p>这是一个通过<a href='http://golang.org/pkg/mime/multipart/'>Go的multipart包</a>提供的围绕上传处理的包装者。字节保留在内存中，除非它们超过阈值（默认为10MB），在那种情况下，它们将被写入到一个临时文件。 <strong>注意：</strong>将一个文件上传绑定到os.File需要Revel将其写入到一个临时文件中,这样会使它比其它类型效率低。</p>
+
+<h3 id='binder'>自定义Binder</h3>
+
+<p>应用可以自定义Binder以获得这个框架的优点。<br />它只需要注册<a href='http://robfig.github.io/revel/docs/godoc/binder.html#Binder'>binder接口</a>并且注册每一个它要访问的类型：</p>
+
+<pre><code>func myBinder(params Params, name string, typ reflect.Type) reflect.Value {
+	...
+}
+
+func init() {
+	revel.TypeBinders[reflect.TypeOf(MyType{})] = myBinder
+}</code></pre>
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

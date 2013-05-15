@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>android工具之lint检测列表(一)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Droider</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+     
+                <h2>android工具之lint检测列表(一)</h2>
+<p class="meta">22 Mar 2013</p>
+
+<div id="post">
+<h1 id='available_issues'>Available issues</h1>
+
+<h2 id='correctness'>Correctness</h2>
+
+<h3 id='adapterviewchildren'>AdapterViewChildren*</h3>
+<hr />
+<p>Summary: Checks that AdapterViews do not define their children in XML</p>
+
+<p>Priority: 10 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>AdapterViews such as ListViews must be configured with data from Java code,such as a ListAdapter.<br />More information: http://developer.android.com/reference/android/widget/AdapterView.html<br /><strong>检测AdapterView不能在XML中定义子项。AdapterView必须在Java代码中设置数据，比如ListView需要一个ListAdapter。在XML中定义AdapterView的子元素是无效的。</strong></p>
+
+<h3 id='onclick'>OnClick</h3>
+<hr />
+<p>Summary: Ensures that onClick attribute values refer to real methods</p>
+
+<p>Priority: 10 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>The onClick attribute value should be the name of a method in this View&#8217;s context to invoke when the view is clicked. This name must correspond to a public method that takes exactly one parameter of type View.<br />Must be a string value, using &#8216;\;&#8217; to escape characters such as &#8216;\n&#8217; or &#8216;\uxxxx&#8217; for a unicode character.<br /><strong>确保XML中onClick属性的值是真正的方法。onClick属性的值必须是存在于这个View的Context中的方法名，当点击这个View时，这个方法就会被调用。另外，这个方法必须是public的，而且需要一个View类型的参数。</strong><br /><strong>onClick属性的值必须是一个String，使用“\”转义特殊字符，或者使用“\uxxxx”格式的Unicode字符。</strong></p>
+
+<h3 id='stopship'>StopShip</h3>
+<hr />
+<p>Summary: Looks for comment markers of the form &#8220;STOPSHIP&#8221; which indicates that code should not be released yet.</p>
+
+<p>Priority: 10 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>NOTE: This issue is disabled by default!You can enable it by adding &#8211;enable StopShip<br />Using the comment // STOPSHIP can be used to flag code that is incomplete but checked in. This comment marker can be used to indicate that the code should not be shipped until the issue is addressed, and lint will look for these.<br /><strong>检测到代码注释中有“STOPSHIP”，这个注释的意思是代码不完整，还不能发布。默认是不检查这个Issue的，要检查它的话，可以加上&#8211;adding StopShip。</strong></p>
+
+<h3 id='suspiciousimport'>SuspiciousImport</h3>
+<hr />
+<p>Summary: Checks for &#8216;import android.R&#8217; statements, which are usually accidental</p>
+
+<p>Priority: 9 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Importing android.R is usually not intentional; it sometimes happens when you use an IDE and ask it to automatically add imports at a time when your project&#8217;s R class it not present.<br />Once the import is there you might get a lot of &#8220;confusing&#8221; error messages because of course the fields available on android.R are not the ones you&#8217;d expect from just looking at your own R class.<br /><strong>检测到“import android.R”语句。android.R通常不是故意导入的，这个问题可能是在当前工程的R文件不存在时使用了IDE的自动补全功能导致的。</strong><br /><strong>一旦导入android.R类，你可能会得到许多“混乱”的错误信息，因为android.R类中可能并不包含用到的属于自己R类中的字段。</strong></p>
+
+<h3 id='usesminsdkattributes'>UsesMinSdkAttributes</h3>
+<hr />
+<p>Summary: Checks that the minimum SDK and target SDK attributes are defined</p>
+
+<p>Priority: 9 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>The manifest should contain a &#60;uses-sdk&gt; element which defines the minimum API Level required for the application to run, as well as the target version (the highest API level you have tested the version for.)<br />More information: http://developer.android.com/guide/topics/manifest/uses-sdk-element.html<br /><strong>检测是否定义最低SDK版本和目标SDK版本。manifest文件中必须包含一个&#60;uses-sdk&gt;元素，这个元素定义了当前应用运行时所需的最低API Level和目标API Level（后者通常是你测试过的最高API Level）。</strong></p>
+
+<h3 id='wrongviewcast'>WrongViewCast</h3>
+<hr />
+<p>Summary: Looks for incorrect casts to views that according to the XML are of a different type</p>
+
+<p>Priority: 9 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>Keeps track of the view types associated with ids and if it finds a usage of the id in the Java code it ensures that it is treated as the same type.<br /><strong>根据View在XML中定义的类型，检测到代码中进行了不正确的类型转换。使用id跟踪View的类型，如果发现在Java代码中用到了这个id，就要确保进行了正确的类型转换。</strong></p>
+
+<h3 id='illegalresourceref'>IllegalResourceRef</h3>
+<hr />
+<p>Summary: Checks for resource references where only literals are allowed</p>
+
+<p>Priority: 8 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>For the versionCode attribute, you have to specify an actual integer literal;you cannot use an indirection with a @dimen/name resource. Similarly, the versionName attribute should be an actual string, not a string resource url.<br /><strong>检测到在只允许文字的地方引用了资源。对于versionCode属性，只能使用一段特定的数字型文字，不能间接地使用一个@dimen/name资源代替。同样，versionName只能是一段真正的字符串，不能是一个字符串资源的引用。</strong></p>
+
+<h3 id='missingregistered'>MissingRegistered</h3>
+<hr />
+<p>Summary: Ensures that classes referenced in the manifest are present in the project or libraries</p>
+
+<p>Priority: 8 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>If a class is referenced in the manifest, it must also exist in the project (or in one of the libraries included by the project. This check helps uncover typos in registration names, or attempts to rename or move classes without updating the manifest file properly.<br />More information: http://developer.android.com/guide/topics/manifest/manifest-intro.html<br /><strong>确保manifest文件中引用的类存在于工程或使用到的库中。这项检查有助于发现拼写错误的注册名称和重命名或者移动类之后没有正确地更新manifest文件的问题。</strong></p>
+
+<h3 id='namespacetypo'>NamespaceTypo</h3>
+<hr />
+<p>Summary: Looks for misspellings in namespace declarations</p>
+
+<p>Priority: 8 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Accidental misspellings in namespace declarations can lead to some very obscure error messages. This check looks for potential misspellings to help track these down.<br /><strong>检测到命名空间声明中的拼写错误。命名空间声明中偶然的拼写错误会带来一些非常模糊的错误信息，检测这种潜在的拼写错误有助于追查这些错误信息。</strong></p>
+
+<h3 id='proguard'>Proguard</h3>
+<hr />
+<p>Summary: Looks for problems in proguard config files</p>
+
+<p>Priority: 8 / 10<br />Severity: Fatal<br />Category: Correctness</p>
+
+<p>Using -keepclasseswithmembernames in a proguard config file is not correct; it can cause some symbols to be renamed which should not be. Earlier versions of ADT used to create proguard.cfg files with the wrong format. Instead of -keepclasseswithmembernames use -keepclasseswithmembers,since the old flags also implies &#8220;allow shrinking&#8221; which means symbols only referred to from XML and not Java (such as possibly CustomViews) can get deleted.<br />More information: http://http://code.google.com/p/android/issues/detail?id=16384<br /><strong>检测混淆配置文件中的问题。在混淆配置文件中使用=keepclasseswithmembernames是不正确的,因为它会导致一些符号被重命名，而实际上这些符号不应该被重命名。此前版本的ADT（21）使用一种错误的格式来创建proguard.cfg文件，现在应该用-keepclasseswithmembers来代替-keepclasseswithmembernames，因为旧标记也意味着“allow shrinking”，意思是只有从XML引用的符号才能被删除，而不包括Java代码（比如自定义View）。</strong></p>
+
+<h3 id='scrollviewcount'>ScrollViewCount</h3>
+<hr />
+<p>Summary: Checks that ScrollViews have exactly one child widget</p>
+
+<p>Priority: 8 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>ScrollViews can only have one child widget. If you want more children, wrap them in a container layout.<br /><strong>检测ScrollView是否只有一个子控件。ScrollView只能有一个子控件，如果想要更多的子控件，可以将这些子控件使用一个容器layout包装起来。</strong></p>
+
+<h3 id='stylecycle'>StyleCycle</h3>
+<hr />
+<p>Summary: Looks for cycles in style definitions</p>
+
+<p>Priority: 8 / 10<br />Severity: Fatal<br />Category: Correctness</p>
+
+<p>There should be no cycles in style definitions as this can lead to runtime exceptions.<br />More information: http://developer.android.com/guide/topics/ui/themes.html#Inheritance<br /><strong>检测风格定义中的循环。风格定义中不应该有循环，因为它会带来运行时异常。</strong></p>
+
+<h3 id='unknownid'>UnknownId</h3>
+<hr />
+<p>Summary: Checks for id references in RelativeLayouts that are not defined elsewhere</p>
+
+<p>Priority: 8 / 10<br />Severity: Fatal<br />Category: Correctness</p>
+
+<p>The @+id/ syntax refers to an existing id, or creates a new one if it has not already been defined elsewhere. However, this means that if you have a typo in your reference, or if the referred view no longer exists, you do not get a warning since the id will be created on demand. This check catches errors where you have renamed an id without updating all of the references to it.<br /><strong>检测到RelativeLayout中有别处没有定义的id引用。使用@+id/语法引用一个已存在的id，如果别处没有定义则创建一个新的id。不过，这也意味着就算你使用一个错误的引用，或者引用的view已经不存在，你也不会得到警告，因为这个id已经根据需要被创建出来了。这项检测可以捕获重命名id后没有更新所有引用它的地方的错误。</strong></p>
+
+<h3 id='wrongcase'>WrongCase</h3>
+<hr />
+<p>Summary: Ensures that the correct case is used for special layout tags such as &#60;fragment&gt;</p>
+
+<p>Priority: 8 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Most layout tags, such as &#60;Button&gt;, refer to actual view classes and are therefore capitalized. However, there are exceptions such as &#60;fragment&gt; and &#60;include&gt;. This lint check looks for incorrect capitalizations.<br />More information: http://developer.android.com/guide/components/fragments.html<br /><strong>确保正确地使用特殊的layout标签，比如&#60;fragment&gt;。大多数layout标签，比如&#60;Button&gt;，这些标签引用实际的view类并因此首字母大写。然而，也有例外，比如&#60;fragment&gt;和&#60;include&gt;。lint会检测不正确的大写字母。</strong></p>
+
+<h3 id='wrongfolder'>WrongFolder</h3>
+<hr />
+<p>Summary: Finds resource files that are placed in the wrong folders</p>
+
+<p>Priority: 8 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>Resource files are sometimes placed in the wrong folder, and it can lead to subtle bugs that are hard to understand. This check looks for problems in this area, such as attempting to place a layout &#8220;alias&#8221; file in a layout/ folder rather than the values/ folder where it belongs.<br /><strong>检测到资源文件放在了错误的目录下。将资源文件放到错误的目录下会带来很难理解的bug，比如试图将一个布局别名文件放到layout目录而不是values目录。</strong></p>
+
+<h3 id='committransaction'>CommitTransaction</h3>
+<hr />
+<p>Summary: Looks for missing commit() calls on FragmentTransactions</p>
+
+<p>Priority: 7 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>After creating a FragmentTransaction, you typically need to commit it as well<br /><strong>检测到在FragmentTransaction上没有调用commit()。在创建一个FragmentTransaction后，通常需要commit它。</strong></p>
+
+<h3 id='dalvikoverride'>DalvikOverride</h3>
+<hr />
+<p>Summary: Looks for methods treated as overrides by Dalvik</p>
+
+<p>Priority: 7 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>The Android virtual machine will treat a package private method in one class as overriding a package private method in its super class, even if they are in separate packages. This may be surprising, but for compatibility reasons the behavior has not been changed (yet).<br />If you really did intend for this method to override the other, make the method protected instead.<br />If you did not intend the override, consider making the method private, or changing its name or signature.<br /><strong>查找被认为通过Dalvik覆盖的方法。android虚拟机会将类中的包私有方法认为重写自它的父类中的包私有方法，即使它们在不同的包中。这可能比较奇怪，但是出于兼容性的考虑，这种行为不会改变。</strong><br /><strong>如果确实打算要这个方法重写别的方法，方法的修饰符就应该是protected。</strong><br /><strong>如果不打算重写，可以考虑将这个方法私有，或改变它的名字或签名。</strong><br /><strong>mark：我试了一下，lint没检查出来，但是运行时会抛出java.lang.VirtualMachineError。</strong></p>
+
+<h3 id='duplicateids'>DuplicateIds</h3>
+<hr />
+<p>Summary: Checks for duplicate ids within a single layout</p>
+
+<p>Priority: 7 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Within a layout, id&#8217;s should be unique since otherwise findViewById() can return an unexpected view.<br /><strong>检查单个Layout中的重复id。在Layout中，id应该是唯一的，否则findViewById()会返回一个意想不到的view。</strong></p>
+
+<h3 id='inconsistentarrays'>InconsistentArrays</h3>
+<hr />
+<p>Summary: Checks for inconsistencies in the number of elements in arrays</p>
+
+<p>Priority: 7 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>When an array is translated in a different locale, it should normally have the same number of elements as the original array. When adding or removing elements to an array, it is easy to forget to update all the locales, and this lint warning finds inconsistencies like these.<br />Note however that there may be cases where you really want to declare a different number of array items in each configuration (for example where the array represents available options, and those options differ for different layout orientations and so on), so use your own judgement to decide if this is really an error.<br />You can suppress this error type if it finds false errors in your project.<br /><strong>检测数组元素数量的不一致性。当数组在不同的区域翻译时，按理应该跟原始数组有相同的元素数量。当对一个数组进行增删改动时，很容易忘记更新所有的区域设置，这项检测会在发现不一致时提出警告。</strong><br /><strong>注意：有时候确实需要在每个配置中声明不同数量的数组元素（比如代表可用选项的数组在不同的布局方向时有所不同等等），因此你需要自己判断这到底是不是一个错误。</strong></p>
+
+<h3 id='nestedscrolling'>NestedScrolling</h3>
+<hr />
+<p>Summary: Checks whether a scrolling widget has any nested scrolling widgets within</p>
+
+<p>Priority: 7 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>A scrolling widget such as a ScrollView should not contain any nested scrolling widgets since this has various usability issues<br /><strong>检测是否在一个滚动组件中嵌套了其它的滚动组件。滚动组件比如ScrollView不应该包含任何嵌套的滚动组件，因为这可能会导致一些可用性的问题。</strong></p>
+
+<h3 id='resourceascolor'>ResourceAsColor</h3>
+<hr />
+<p>Summary: Looks for calls to setColor where a resource id is passed instead of a resolved color</p>
+
+<p>Priority: 7 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>Methods that take a color in the form of an integer should be passed an RGB triple, not the actual color resource id. You must call getResources().getColor(resource) to resolve the actual color value first.<br /><strong>检测所有调用setColor()的地方看是否传递了一个资源id而不是被解析的颜色值。setColor()方法需要的是一个RGB格式的值，而不是确切的颜色资源ID。必须先调用getResources().getColor(resource)将资源解析成真正的颜色值。</strong></p>
+
+<h3 id='scrollviewsize'>ScrollViewSize</h3>
+<hr />
+<p>Summary: Checks that ScrollViews use wrap_content in scrolling dimension</p>
+
+<p>Priority: 7 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>ScrollView children must set their layout_width or layout_height attributes to wrap_content rather than fill_parent or match_parent in the scrolling dimension<br /><strong>检测ScrollView的滚动尺寸使用wrap_content。ScrollView的子控件必须将它们的layout_width或layout_height属性（这个取决于ScrollView的滚动方向）设置为wrap_content而不是fill_parent或match_parent。</strong></p>
+
+<h3 id='textviewedits'>TextViewEdits</h3>
+<hr />
+<p>Summary: Looks for TextViews being used for input</p>
+
+<p>Priority: 7 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Using a &#60;TextView&gt; to input text is generally an error, you should be using &#60;EditText&gt; instead. EditText is a subclass of TextView, and some of the editing support is provided by TextView, so it&#8217;s possible to set some input-related properties on a TextView. However, using a TextView along with input attributes is usually a cut &amp; paste error. To input text you should be using &#60;EditText&gt;.<br />This check also checks subclasses of TextView, such as Button and CheckBox,since these have the same issue: they should not be used with editable attributes.<br /><strong>检测到TextView被用来输入。输入文本的时候使用&#60;TextView&gt;通常是个错误，应该使用&#60;EditText&gt;代替。EditText是TextView的子类，它的一些编辑支持也是通过TextView提供的，因此它可以设置一些TextView上的输入相关的属性。不过，使用一个有输入属性的TextView通常是在剪切/复制时发生的错误。要输入文本应该使用&#60;EditText&gt;。</strong><br /><strong>这项检测同时也会检查TextView的其它子类，比如Button和CheckBox，因此它们会有相同的问题：它们不应该使用可编辑的属性。</strong></p>
+
+<h3 id='commitprefedits'>CommitPrefEdits</h3>
+<hr />
+<p>Summary: Looks for code editing a SharedPreference but forgetting to call commit() on it</p>
+
+<p>Priority: 6 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>After calling edit() on a SharedPreference, you must call commit() or apply() on the editor to save the results.<br /><strong>检测到代码中修改了一个SharedPreference但是忘记调用了commit()方法。在SharedPreference上调用了edit()之后，必须在editor上调用commit()或apply()以保存结果。</strong></p>
+
+<h3 id='cutpasteid'>CutPasteId</h3>
+<hr />
+<p>Summary: Looks for code cut &amp; paste mistakes in findViewById() calls</p>
+
+<p>Priority: 6 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>This lint check looks for cases where you have cut &amp; pasted calls to findViewById but have forgotten to update the R.id field. It&#8217;s possible that your code is simply (redundantly) looking up the field repeatedly, but lint cannot distinguish that from a case where you for example want to initialize fields prev and next and you cut &amp; pasted findViewById(R.id.prev) and forgot to update the second initialization to R.id.next.<br /><strong>检测剪切&amp;粘贴findViewById()方法时的错误。当剪切&amp;粘贴findViewById()时，可能忘记修改R.id字段，这项检测会检查这种错误。有可能你的代码只是简单地反复查找字段（冗余），但是lint不会区分这种情况与普通忘记修改字段的情况。</strong></p>
+
+<h3 id='defaultlocale'>DefaultLocale</h3>
+<hr />
+<p>Summary: Finds calls to locale-ambiguous String manipulation methods</p>
+
+<p>Priority: 6 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Calling String#toLowerCase() or #toUpperCase() without specifying an explicit locale is a common source of bugs. The reason for that is that those methods will use the current locale on the user&#8217;s device, and even though the code appears to work correctly when you are developing the app, it will fail in some locales. For example, in the Turkish locale, the uppercase replacement for i is not I.<br />If you want the methods to just perform ASCII replacement, for example to convert an enum name, call String#toUpperCase(Locale.US) instead. If you really want to use the current locale, call String#toUpperCase(Locale.getDefault()) instead.<br />More information: http://developer.android.com/reference/java/util/Locale.html#default_locale<br /><strong>发现调用了区域模糊的字符串操作方法。这个bug通常是在调用String的toLowerCase()或者toUpperCase()时没有指定明确的区域导致的。原因是如果不指定区域的话，这些方法就会使用用户设备上当前的语言环境，即使该代码在你开发app时是正常工作的，它也会在某些环境下失败。比如，在土耳其的语言环境下，i的大写字母不是I。</strong><br /><strong>如果你想让这些方法仅仅执行ASCII转换，比如转换一个枚举名，就调用String的toUpperCase(Locale.US)。如果你确实要使用当前的语言环境，就调用String的toUpperCase(Locale.getDefault())。</strong></p>
+
+<h3 id='duplicatedefinition'>DuplicateDefinition</h3>
+<hr />
+<p>Summary: Discovers duplicate definitions of resources</p>
+
+<p>Priority: 6 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>You can define a resource multiple times in different resource folders; that&#8217;s how string translations are done, for example. However, defining the same resource more than once in the same resource folder is likely an error, for example attempting to add a new resource without realizing that the name is already used, and so on.<br /><strong>发现重复定义的资源。可以在不同的资源目录中多次定义一个资源，比如，需要翻译的字符串就是这么做的。然而，在同一个目录下多次定义同样的资源很可能就是一个错误，例如，在没意识到的情况下试图将名称已经被使用的新资源添加到目录下。</strong></p>
+
+<h3 id='duplicateincludedids'>DuplicateIncludedIds</h3>
+<hr />
+<p>Summary: Checks for duplicate ids across layouts that are combined with include tags</p>
+
+<p>Priority: 6 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>It&#8217;s okay for two independent layouts to use the same ids. However, if layouts are combined with include tags, then the id&#8217;s need to be unique within any chain of included layouts, or Activity#findViewById() can return an unexpected view.<br /><strong>检查layout中使用include标签时的重复ID。可以在两个独立的布局中使用同一个ID，但是，如果该layout是使用include标签合并的，那么所有被合并的layout中的ID就应该是独一无二的，否则Activity的findViewById()可能返回一个意想不到的view。</strong></p>
+
+<h3 id='inlinedapi'>InlinedApi</h3>
+<hr />
+<p>Summary: Finds inlined fields that may or may not work on older platforms</p>
+
+<p>Priority: 6 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>This check scans through all the Android API field references in the application and flags certain constants, such as static final integers and Strings, which were introduced in later versions. These will actually be copied into the class files rather than being referenced, which means that the value is available even when running on older devices. In some cases that&#8217;s fine, and in other cases it can result in a runtime crash or incorrect behavior. It depends on the context, so consider the code carefully and device whether it&#8217;s safe and can be suppressed or whether the code needs tbe guarded.<br />If you really want to use this API and don&#8217;t need to support older devices just set the minSdkVersion in your AndroidManifest.xml file.<br />If your code is deliberately accessing newer APIs, and you have ensured (e.g.with conditional execution) that this code will only ever be called on a supported platform, then you can annotate your class or method with the @TargetApi annotation specifying the local minimum SDK to apply, such as @TargetApi(11), such that this check considers 11 rather than your manifest file&#8217;s minimum SDK as the required API level.<br /><strong>检测到内联字段可能无法在旧平台上工作。这项检查扫描应用中引用的所有在更高平台上引入的Android API字段和一定的常量标记，比如static final的数字和字符串。实际上这些值会被复制到类文件而不是直接引用，这也意味着在旧平台上这些值也是可用的。在某些情况下这很好，但是在其它情况下它会返回一个运行时异常或者不正确的行为。其结果取决于上下文，因此应该仔细地研究代码和设备是否安全并且可以避免这个问题，或者代码需要tbe guarded。</strong><br /><strong>如果你确实想要使用这个API并且不需要支持旧平台，只在AndroidManifest.xml文件中设置minSdkVersion即可。</strong><br /><strong>如果你是故意在代码中访问新的API，并且可以保证（有条件的执行），这段代码就只会在支持它的平台上被调用，然后你就可以使用@TargetApi注释你的类或者方法来指定应用环境的最小SDK，比如对于@TargetApi(11)，这项检查只考虑API 11而不是你的manifest文件中最低SDK的API级别。</strong></p>
+
+<h3 id='instantiatable'>Instantiatable</h3>
+<hr />
+<p>Summary: Ensures that classes registered in the manifest file are instantiatable</p>
+
+<p>Priority: 6 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Activities, services, broadcast receivers etc. registered in the manifest file must be &#8220;instantiatable&#8221; by the system, which means that the class must be public, it must have an empty public constructor, and if it&#8217;s an inner class,it must be a static inner class.<br /><strong>确保在manifest文件中注册的类可以实例化。在manifest文件中注册的Activity、Service、BroadcastReceiver等等必须是可以被系统实例化的，这也意味着这些类必须是public的，并且必须有一个空的public的构造方法，如果它是一个内部类，那它必须是静态内部类。</strong></p>
+
+<h3 id='invalidpackage'>InvalidPackage</h3>
+<hr />
+<p>Summary: Finds API accesses to APIs that are not supported in Android</p>
+
+<p>Priority: 6 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>This check scans through libraries looking for calls to APIs that are not included in Android.<br />When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.<br />This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.<br /><strong>发现API访问了Android不支持的API。这项检查通过扫描库文件查找对Android中不包含的API的调用。</strong><br /><strong>当创建Android工程的时候，通过设置classpath，你只能访问Android中包含的包里面的类。然而，如果你在工程的libs/目录下添加了其它工程，你就无法保证这些jar文件是通过Android指定的classpath编译的，尤其是，它们可以访问不支持的API比如java.applet。</strong><br /><strong>这项检查通过扫描jar文件来查找对Android不支持的api的访问。如果你的代码调用的库中的类引用不支持的软件包，这就只是一个错误。</strong></p>
+
+<h3 id='librarycustomview'>LibraryCustomView</h3>
+<hr />
+<p>Summary: Flags custom attributes in libraries, which must use the res-auto-namespace instead</p>
+
+<p>Priority: 6 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>When using a custom view with custom attributes in a library project, the layout must use the special namespace http://schemas.android.com/apk/res-auto instead of a URI which includes the library project&#8217;s own package. This will be used to automatically adjust the namespace of the attributes when the library resources are merged into the application project.<br /><strong>标记库中的自定义属性，必须使用res-auto命名空间代替。当使用库工程中有自定义属性的自定义控件时，布局中必须使用指定的命名空间__http://schemas.android.com/apk/res-auto代替库工程包中的URI。当库资源合并到应用工程时，它将被用于属性命名空间的自动适配。</strong></p>
+
+<h3 id='missingprefix'>MissingPrefix</h3>
+<hr />
+<p>Summary: Detect XML attributes not using the Android namespace</p>
+
+<p>Priority: 6 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>Most Android views have attributes in the Android namespace. When referencing these attributes you must include the namespace prefix, or your attribute will be interpreted by aapt as just a custom attribute.<br />Similarly, in manifest files, nearly all attributes should be in the android:namespace.<br /><strong>检测到XML属性未使用Android命名空间。Android命名空间中有大多数Android视图的属性。引用这些属性的时候，必须包含一个命名空间前缀，或者你的属性是被aapt解释过的自定义属性。</strong><br /><strong>同样地，在manifest文件中，几乎全部属性都包含在android:namespace中。</strong></p>
+
+<h3 id='multipleusessdk'>MultipleUsesSdk</h3>
+<hr />
+<p>Summary: Checks that the &#60;uses-sdk&gt; element appears at most once</p>
+
+<p>Priority: 6 / 10<br />Severity: Fatal<br />Category: Correctness</p>
+
+<p>The &#60;uses-sdk&gt; element should appear just once; the tools will not merge the contents of all the elements so if you split up the attributes across multiple elements, only one of them will take effect. To fix this, just merge all the attributes from the various elements into a single &#60;uses-sdk&gt; element.<br />More information: http://developer.android.com/guide/topics/manifest/uses-sdk-element.html<br /><strong>检查&#60;uses-sdk&gt;元素最多出现一次。&#60;uses-sdk&gt;元素应该只出现一次，工具不会合并所有元素中的内容，因此如果通过多个元素将属性分开，那么它们中只有一个有效。要修复这个问题，只需要将各个元素中的所有属性合并到一个单独的&#60;uses-sdk&gt;元素中。</strong></p>
+
+<h3 id='newapi'>NewApi</h3>
+<hr />
+<p>Summary: Finds API accesses to APIs that are not supported in all targeted API versions</p>
+
+<p>Priority: 6 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>This check scans through all the Android API calls in the application and warns about any calls that are not available on all versions targeted by this application (according to its minimum SDK attribute in the manifest).<br />If you really want to use this API and don&#8217;t need to support older devices just set the minSdkVersion in your AndroidManifest.xml file.<br />If your code is deliberately accessing newer APIs, and you have ensured (e.g.with conditional execution) that this code will only ever be called on a supported platform, then you can annotate your class or method with the @TargetApi annotation specifying the local minimum SDK to apply, such as @TargetApi(11), such that this check considers 11 rather than your manifest file&#8217;s minimum SDK as the required API level.<br />If you are deliberately setting android: attributes in style definitions, make sure you place this in a values-v11 folder in order to avoid running into runtime conflicts on certain devices where manufacturers have added custom attributes whose ids conflict with the new ones on later platforms.<br />Similarly, you can use tools:targetApi=&#8221;11&#8221; in an XML file to indicate that the element will only be inflated in an adequate context.<br /><strong>发现API访问了所有针对的系统版本都不支持的API。这项检查扫描应用中所有调用了Android API的地方，并且对应用不可用的调用提出警告（根据manifest文件中的最小SDK属性）。</strong><br /><strong>如果你确实想使用这个API并不需要支持旧的设备，只需要在AndroidManifest.xml文件中设置minSdkVersion属性即可。</strong><br /><strong>如果你的代码是故意访问了更新的API，并且你可以确保（有条件地执行）代码只在支持的平台上调用，可以使用@TargetApi注释来注释你的类或方法以指定应用环境的最低SDK，例如@TargetApi(11)，这项检查就会考虑API 11而不是你的manifest文件中需要的最低SDK级别。</strong><br /><strong>如果你在风格定义中故意设置了android:attributes，就要确保你把它放到了values-v11目录下以避免在新的平台上运行时与某些设备制造商增加的自定义属性冲突。</strong><br /><strong>同样地，可以在XML中使用tools:targetApi=”11&#8221;来让元素只在适当的上下文中加载。</strong></p>
+
+<h3 id='oldtargetapi'>OldTargetApi</h3>
+<hr />
+<p>Summary: Checks that the manifest specifies a targetSdkVersion that is recent</p>
+
+<p>Priority: 6 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>When your application runs on a version of Android that is more recent than your targetSdkVersion specifies that it has been tested with, various compatibility modes kick in. This ensures that your application continues to work, but it may look out of place. For example, if the targetSdkVersion is less than 14, your app may get an option button in the UI.<br />To fix this issue, set the targetSdkVersion to the highest available value.Then test your app to make sure everything works correctly. You may want to consult the compatibility notes to see what changes apply to each version you are adding support for:http://developer.android.com/reference/android/os/Build.VERSION_CODES.html<br />More information: http://developer.android.com/reference/android/os/Build.VERSION_CODES.html<br /><strong>检查manifest指定的targetSdkVersion是最新的。当你的应用运行在一个比你指定的targetSdkVersion更新的Android版本上时，需要使用各种兼容性模式启动测试。这样可以保证你的应用继续工作，但是也许会显得某些地方格格不入。例如，如果targetSdkVersion小于14，你的应用的UI中也许就会出现一个选项按钮。</strong><br /><strong>要解决这个问题，将targetSdkVersion的值设置为可用的最大值即可。然后测试你的应用以保证一切工作正常。有关兼容性的详情，请参阅：http://developer.android.com/reference/android/os/Build.VERSION_CODES.html</strong></p>
+
+<h3 id='override'>Override</h3>
+<hr />
+<p>Summary: Finds method declarations that will accidentally override methods in later versions</p>
+
+<p>Priority: 6 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>Suppose you are building against Android API 8, and you&#8217;ve subclassed Activity. In your subclass you add a new method called isDestroyed(). At somelater point, a method of the same name and signature is added to Android. Your method will now override the Android method, and possibly break its contract.Your method is not calling super.isDestroyed(), since your compilation target doesn&#8217;t know about the method.<br />The above scenario is what this lint detector looks for. The above example is real, since isDestroyed() was added in API 17, but it will be true for any method you have added to a subclass of an Android class where your build target is lower than the version the method was introduced in.<br />To fix this, either rename your method, or if you are really trying to augment the builtin method if available, switch to a higher build target where you can deliberately add @Override on your overriding method, and call super if appropriate etc.<br /><strong>查找方法声明偶然地覆盖了更高版本的方法。假设你针对Android API 8编译，并且有一个Activity的子类。在你的子类中添加了一个新名为isDestroyed()的方法。在后面的一些版本中，方法名以及签名相同的方法被加入到了Android中。现在你的方法就覆盖了Android的方法，并且可能打破契约。你的方法没有调用super.isDestroyed()，因此编译时不知道这个方法的目标。</strong><br /><strong>上面说的就是lint检测的情况。上面的例子也是真实的，因为isDestroyed()是API 17中加入的，但是对于你添加到这个子类中的任何方法，在编译目标低于引入这个方法的版本时，这个方法都返回true。</strong></p>
+
+<h3 id='registered'>Registered</h3>
+<hr />
+<p>Summary: Ensures that Activities, Services and Content Providers are registered in the manifest</p>
+
+<p>Priority: 6 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Activities, services and content providers should be registered in the AndroidManifest.xml file using &#60;activity&gt;, &#60;service&gt; and &#60;provider&gt; tags.<br />If your activity is simply a parent class intended to be subclassed by other &#8220;real&#8221; activities, make it an abstract class.<br />More information: http://developer.android.com/guide/topics/manifest/manifest-intro.html</p>
+
+<h3 id='sdcardpath'>SdCardPath</h3>
+<hr />
+<p>Summary: Looks for hardcoded references to /sdcard</p>
+
+<p>Priority: 6 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Your code should not reference the /sdcard path directly; instead use Environment.getExternalStorageDirectory().getPath().<br />Similarly, do not reference the /data/data/ path directly; it can vary in multi-user scenarios. Instead, use Context.getFilesDir().getPath().<br />More information: http://developer.android.com/guide/topics/data/data-storage.html#filesExternal</p>
+
+<h3 id='showtoast'>ShowToast</h3>
+<hr />
+<p>Summary: Looks for code creating a Toast but forgetting to call show() on it</p>
+
+<p>Priority: 6 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Toast.makeText() creates a Toast but does not show it. You must call show() on the resulting object to actually make the Toast appear.</p>
+
+<h3 id='simpledateformat'>SimpleDateFormat</h3>
+<hr />
+<p>Summary: Using SimpleDateFormat directly without an explicit locale</p>
+
+<p>Priority: 6 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Almost all callers should use getDateInstance(), getDateTimeInstance(), or getTimeInstance() to get a ready-made instance of SimpleDateFormat suitable for the user&#8217;s locale. The main reason you&#8217;d create an instance this class directly is because you need to format/parse a specific machine-readable format, in which case you almost certainly want to explicitly ask for US to ensure that you get ASCII digits (rather than, say, Arabic digits).<br />Therefore, you should either use the form of the SimpleDateFormat constructor where you pass in an explicit locale, such as Locale.US, or use one of the get instance methods, or suppress this error if really know what you are doing.<br />More information: http://developer.android.com/reference/java/text/SimpleDateFormat.html</p>
+
+<h3 id='suspicious0dp'>Suspicious0dp</h3>
+<hr />
+<p>Summary: Looks for 0dp as the width in a vertical LinearLayout or as the height in a horizontal</p>
+
+<p>Priority: 6 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>Using 0dp as the width in a horizontal LinearLayout with weights is a useful trick to ensure that only the weights (and not the intrinsic sizes) are used when sizing the children.<br />However, if you use 0dp for the opposite dimension, the view will be invisible. This can happen if you change the orientation of a layout without also flipping the 0dp dimension in all the children.</p>
+
+<h3 id='uniquepermission'>UniquePermission</h3>
+<hr />
+<p>Summary: Checks that permission names are unique</p>
+
+<p>Priority: 6 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>The unqualified names or your permissions must be unique. The reason for this is that at build time, the aapt tool will generate a class named Manifest which contains a field for each of your permissions. These fields are named using your permission unqualified names (i.e. the name portion after the last dot).<br />If more than one permission maps to the same field name, that field will arbitrarily name just one of them.</p>
+
+<h3 id='validfragment'>ValidFragment</h3>
+<hr />
+<p>Summary: Ensures that Fragment subclasses can be instantiated</p>
+
+<p>Priority: 6 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>From the Fragment documentation:<br />Every fragment must have an empty constructor, so it can be instantiated when restoring its activity&#8217;s state. It is strongly recommended that subclasses do not have other constructors with parameters, since these constructors will not be called when the fragment is re-instantiated; instead, arguments can be supplied by the caller with setArguments(Bundle) and later retrieved by the Fragment with getArguments().<br />More information: http://developer.android.com/reference/android/app/Fragment.html#Fragment()</p>
+
+<h3 id='wrongcall'>WrongCall</h3>
+<hr />
+<p>Summary: Finds cases where the wrong call is made, such as calling onMeasure instead of measure</p>
+
+<p>Priority: 6 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>Custom views typically need to call measure() on their children, not onMeasure. Ditto for onDraw, onLayout, etc.</p>
+
+<h3 id='wrongmanifestparent'>WrongManifestParent</h3>
+<hr />
+<p>Summary: Checks that various manifest elements are declared in the right place</p>
+
+<p>Priority: 6 / 10<br />Severity: Fatal<br />Category: Correctness</p>
+
+<p>The &#60;uses-library&gt; element should be defined as a direct child of the &#60;application&gt; tag, not the &#60;manifest&gt; tag or an &#60;activity&gt; tag. Similarly, a &#60;uses-sdk&gt; tag much be declared at the root level, and so on. This check looks for incorrect declaration locations in the manifest, and complains if an element is found in the wrong place.<br />More information: http://developer.android.com/guide/topics/manifest/manifest-intro.html</p>
+
+<h3 id='duplicateactivity'>DuplicateActivity</h3>
+<hr />
+<p>Summary: Checks that an activity is registered only once in the manifest</p>
+
+<p>Priority: 5 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>An activity should only be registered once in the manifest. If it is accidentally registered more than once, then subtle errors can occur, since attribute declarations from the two elements are not merged, so you may accidentally remove previous declarations.</p>
+
+<h3 id='manifestorder'>ManifestOrder</h3>
+<hr />
+<p>Summary: Checks for manifest problems like &#60;uses-sdk&gt; after the &#60;application&gt; tag</p>
+
+<p>Priority: 5 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>The &#60;application&gt; tag should appear after the elements which declare which version you need, which features you need, which libraries you need, and so on. In the past there have been subtle bugs (such as themes not getting applied correctly) when the &#60;application&gt; tag appears before some of these other elements, so it&#8217;s best to order your manifest in the logical dependency order.</p>
+
+<h3 id='missingid'>MissingId</h3>
+<hr />
+<p>Summary: Ensures that XML tags like &#60;fragment&gt; specify an id or tag attribute</p>
+
+<p>Priority: 5 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>If you do not specify an android:id or an android:tag attribute on a &#60;fragment&gt; element, then if the activity is restarted (for example for an orientation rotation) you may lose state. From the fragment documentation:<br />&#8220;Each fragment requires a unique identifier that the system can use to restorethe fragment if the activity is restarted (and which you can use to capture the fragment to perform transactions, such as remove it). * Supply the android:id attribute with a unique ID.</p>
+
+<ul>
+<li>Supply the android:tag attribute with a unique string.</li>
+</ul>
+
+<p>If you provide neither of the previous two, the system uses the ID of the container view.<br />More information: http://developer.android.com/guide/components/fragments.html</p>
+
+<h3 id='protectedpermissions'>ProtectedPermissions</h3>
+<hr />
+<p>Summary: Looks for permissions that are only granted to system apps</p>
+
+<p>Priority: 5 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>Permissions with the protection level signature or signatureOrSystem are only granted to system apps. If an app is a regular non-system app, it will never be able to use these permissions.</p>
+
+<h3 id='statelistreachable'>StateListReachable</h3>
+<hr />
+<p>Summary: Looks for unreachable states in a &#60;selector&gt;</p>
+
+<p>Priority: 5 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>In a selector, only the last child in the state list should omit a state qualifier. If not, all subsequent items in the list will be ignored since the given item will match all.</p>
+
+<h3 id='unknownidinlayout'>UnknownIdInLayout</h3>
+<hr />
+<p>Summary: Makes sure that @+id references refer to views in the same layout</p>
+
+<p>Priority: 5 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>The @+id/ syntax refers to an existing id, or creates a new one if it has not already been defined elsewhere. However, this means that if you have a typo in your reference, or if the referred view no longer exists, you do not get a warning since the id will be created on demand.<br />This is sometimes intentional, for example where you are referring to a view which is provided in a different layout via an include. However, it is usually an accident where you have a typo or you have renamed a view without updating all the references to it.</p>
+
+<h3 id='unlocalizedsms'>UnlocalizedSms</h3>
+<hr />
+<p>Summary: Looks for code sending text messages to unlocalized phone numbers</p>
+
+<p>Priority: 5 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>SMS destination numbers must start with a country code or the application code must ensure that the SMS is only sent when the user is in the same country as the receiver.</p>
+
+<h3 id='gridlayout'>GridLayout</h3>
+<hr />
+<p>Summary: Checks for potential GridLayout errors like declaring rows and columns outside the declared grid dimensions</p>
+
+<p>Priority: 4 / 10<br />Severity: Fatal<br />Category: Correctness</p>
+
+<p>Declaring a layout_row or layout_column that falls outside the declared size of a GridLayout&#8217;s rowCount or columnCount is usually an unintentional error.</p>
+
+<h3 id='inormmusage'>InOrMmUsage</h3>
+<hr />
+<p>Summary: Looks for use of the &#8220;mm&#8221; or &#8220;in&#8221; dimensions</p>
+
+<p>Priority: 4 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Avoid using mm (millimeters) or in (inches) as the unit for dimensions.<br />While it should work in principle, unfortunately many devices do not report the correct true physical density, which means that the dimension calculations won&#8217;t work correctly. You are better off using dp (and for font sizes, sp.)</p>
+
+<h3 id='requiredsize'>RequiredSize</h3>
+<hr />
+<p>Summary: Ensures that the layout_width and layout_height are specified for all views</p>
+
+<p>Priority: 4 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>All views must specify an explicit layout_width and layout_height attribute.There is a runtime check for this, so if you fail to specify a size, an exception is thrown at runtime.<br />It&#8217;s possible to specify these widths via styles as well. GridLayout, as a special case, does not require you to specify a size.</p>
+
+<h3 id='extratext'>ExtraText</h3>
+<hr />
+<p>Summary: Looks for extraneous text in layout files</p>
+
+<p>Priority: 3 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Layout resource files should only contain elements and attributes. Any XML text content found in the file is likely accidental (and potentially dangerous if the text resembles XML and the developer believes the text to be functional)</p>
+
+<h3 id='innerclassseparator'>InnerclassSeparator</h3>
+<hr />
+<p>Summary: Ensures that inner classes are referenced using &#8217;$&#8217; instead of &#8217;.&#8217; in class names</p>
+
+<p>Priority: 3 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>When you reference an inner class in a manifest file, you must use &#8217;$&#8217; instead of &#8217;.&#8217; as the separator character, i.e. Outer$Inner instead of Outer.Inner.<br />(If you get this warning for a class which is not actually an inner class,it&#8217;s because you are using uppercase characters in your package name, which is not conventional.)</p>
+
+<h3 id='localsuppress'>LocalSuppress</h3>
+<hr />
+<p>Summary: Looks for @SuppressLint annotations in locations where it doesn&#8217;t work for class based checks</p>
+
+<p>Priority: 3 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>The @SuppressAnnotation is used to suppress Lint warnings in Java files.<br />However, while many lint checks analyzes the Java source code, where they can find annotations on (for example) local variables, some checks are analyzing the .class files. And in class files, annotations only appear on classes,fields and methods. Annotations placed on local variables disappear. If you attempt to suppress a lint error for a class-file based lint check, the suppress annotation not work. You must move the annotation out to the surrounding method.</p>
+
+<h3 id='privateresource'>PrivateResource</h3>
+<hr />
+<p>Summary: Looks for references to private resources</p>
+
+<p>Priority: 3 / 10<br />Severity: Fatal<br />Category: Correctness</p>
+
+<p>Private resources should not be referenced; the may not be present everywhere,and even where they are they may disappear without notice.<br />To fix this, copy the resource into your own project. You can find the platform resources under $ANDROID_SK/platforms/android-$VERSION/data/res/.</p>
+
+<h3 id='proguardsplit'>ProguardSplit</h3>
+<hr />
+<p>Summary: Checks for old proguard.cfg files that contain generic Android rules</p>
+
+<p>Priority: 3 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Earlier versions of the Android tools bundled a single proguard.cfg file containing a ProGuard configuration file suitable for Android shrinking and obfuscation. However, that version was copied into new projects, which means that it does not continue to get updated as we improve the default ProGuard rules for Android.<br />In the new version of the tools, we have split the ProGuard configuration into two halves:</p>
+
+<ul>
+<li>A simple configuration file containing only project-specific flags, in yourproject</li>
+
+<li>A generic configuration file containing the recommended set of ProGuard options for Android projects. This generic file lives in the SDK install directory which means that it gets updated along with the tools.</li>
+</ul>
+
+<p>In order for this to work, the proguard.config property in the project.properties file now refers to a path, so you can reference both the generic file as well as your own (and any additional files too).<br />To migrate your project to the new setup, create a new proguard-project.txt file in your project containing any project specific ProGuard flags as well as any customizations you have made, then update your project.properties file to contain:<br />proguard.config=${sdk.dir}/tools/proguard/proguard-android.txt:proguard-projec.txt</p>
+
+<h3 id='spusage'>SpUsage</h3>
+<hr />
+<p>Summary: Looks for uses of &#8220;dp&#8221; instead of &#8220;sp&#8221; dimensions for text sizes</p>
+
+<p>Priority: 3 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>When setting text sizes, you should normally use sp, or &#8220;scale-independent pixels&#8221;. This is like the dp unit, but it is also scaled by the user&#8217;s font size preference. It is recommend you use this unit when specifying font sizes,so they will be adjusted for both the screen density and the user&#8217;s preference.<br />There are cases where you might need to use dp; typically this happens when the text is in a container with a specific dp-size. This will prevent the text from spilling outside the container. Note however that this means that the user&#8217;s font size settings are not respected, so consider adjusting the layout itself to be more flexible.<br />More information: http://developer.android.com/training/multiscreen/screendensities.html</p>
+
+<h3 id='deprecated'>Deprecated</h3>
+<hr />
+<p>Summary: Looks for usages of deprecated layouts, attributes, and so on.</p>
+
+<p>Priority: 2 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>Deprecated views, attributes and so on are deprecated because there is a better way to do something. Do it that new way. You&#8217;ve been warned.</p>
+
+<h3 id='mangledcrlf'>MangledCRLF</h3>
+<hr />
+<p>Summary: Checks that files with DOS line endings are consistent</p>
+
+<p>Priority: 2 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>On Windows, line endings are typically recorded as carriage return plus newline: \r\n.<br />This detector looks for invalid line endings with repeated carriage return characters (without newlines). Previous versions of the ADT plugin could accidentally introduce these into the file, and when editing the file, the editor could produce confusing visual artifacts.<br />More information: https://bugs.eclipse.org/bugs/show_bug.cgi?id=375421</p>
+
+<h3 id='missingversion'>MissingVersion</h3>
+<hr />
+<p>Summary: Checks that the application name and version are set</p>
+
+<p>Priority: 2 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>You should define the version information for your application.<br />android:versionCode: An integer value that represents the version of the application code, relative to other versions.<br />android:versionName: A string value that represents the release version of the application code, as it should be shown to users.<br />More information: http://developer.android.com/tools/publishing/versioning.html#appversioning</p>
+
+<h3 id='orientation'>Orientation</h3>
+<hr />
+<p>Summary: Checks that LinearLayouts with multiple children set the orientation</p>
+
+<p>Priority: 2 / 10<br />Severity: Error<br />Category: Correctness</p>
+
+<p>The default orientation of a LinearLayout is horizontal. It&#8217;s pretty easy to believe that the layout is vertical, add multiple children to it, and wonder why only the first child is visible (when the subsequent children are off screen to the right). This lint rule helps pinpoint this issue by warning whenever a LinearLayout is used with an implicit orientation and multiple children.</p>
+
+<h3 id='pxusage'>PxUsage</h3>
+<hr />
+<p>Summary: Looks for use of the &#8220;px&#8221; dimension</p>
+
+<p>Priority: 2 / 10<br />Severity: Warning<br />Category: Correctness</p>
+
+<p>For performance reasons and to keep the code simpler, the Android system uses pixels as the standard unit for expressing dimension or coordinate values.That means that the dimensions of a view are always expressed in the code using pixels, but always based on the current screen density. For instance, if myView.getWidth() returns 10, the view is 10 pixels wide on the current screen, but on a device with a higher density screen, the value returned might be 15. If you use pixel values in your application code to work with bitmaps that are not pre-scaled for the current screen density, you might need to scale the pixel values that you use in your code to match the un-scaled bitmap source.<br />More information: http://developer.android.com/guide/practices/screens_support.html#screen-independence</p>
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

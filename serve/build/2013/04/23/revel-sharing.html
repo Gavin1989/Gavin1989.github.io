@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Revel框架——共享功能</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Droider</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+     
+                <h2>Revel框架——共享功能</h2>
+<p class="meta">24 Apr 2013</p>
+
+<div id="post">
+<h2 id='id48'>共享功能</h2>
+
+<p>Revel提供了在不同的域之间共享功能的途径：</p>
+
+<p>* actions * controllers * applications</p>
+
+<h2 id='actions'>Actions</h2>
+
+<p>相关的actions共享一个单独的Controller类型。开发者可以为它添加数据域以便存储更多关于请求的上下文。拦截器可以在Revel运行前或后注册到Controller的任意action上。</p>
+
+<h2 id='controllers'>Controllers</h2>
+
+<p>Revel允许将Controller混合在一起以便跨越不同的Controller类型共享字段、方法以及拦截器。<br />下面是一个例子：</p>
+
+<pre><code>// MongoController提供访问我们的MongoDB
+type MongoController struct {
+	*revel.Controller
+    Session *mgo.Session
+}
+
+func (c *MongoController) Begin() revel.Result {
+	c.Session = ...
+}
+
+func init() {
+	revel.InterceptMethod((*MongoController).Begin, revel.BEFORE)
+}
+
+type AppController struct {
+	*revel.Controller
+    MongoController
+}</code></pre>
+
+<p>在这个例子中，开发者创建了一个MongoController，它用来跨越整个应用，开发者可以将它混合到另外的Controller中。在这里，拦截器将会运行并且AppController上的action可以访问<em>mgo.Session。</em></p>
+
+<h2 id='application'>Application</h2>
+
+<p>组件可以用来跨应用共享Controller类型、模板和资产。</p>
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

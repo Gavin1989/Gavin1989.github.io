@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Ubuntu下golang的emacs配置</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Droider</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+     
+                <h2>Ubuntu下golang的emacs配置</h2>
+<p class="meta">20 Apr 2013</p>
+
+<div id="post">
+<p>参考了<a href='https://github.com/astaxie/build-web-application-with-golang/blob/master/ebook/01.4.md'>《Go Web编程》</a><br />这里说一下我的步骤：</p>
+
+<ol>
+<li>
+<p>配置emacs高亮显示</p>
+
+<pre><code> cp $GOROOT/misc/emacs/* ~/.emacs.d/</code></pre>
+</li>
+
+<li>
+<p>安装gocode</p>
+
+<pre><code> go get -u github.com/nsf/gocode</code></pre>
+</li>
+
+<li>
+<p>配置gocode</p>
+
+<pre><code> ~ cd $GOROOT/src/pkg/github.com/nsf/gocode/emacs
+ ~ cp go-autocomplete.el ~/.emacs.d/
+ ~ gocode set propose-builtins true
+ propose-builtins true
+ ~ gocode set lib-path &quot;/home/gavin/go/pkg/linux_amd64&quot; // 这个是自己的路径
+ lib-path &quot;/home/gavin/go/pkg/linux_amd64&quot;
+ ~ gocode set
+ propose-builtins true
+ lib-path &quot;/home/gavin/go/pkg/linux_amd64&quot;</code></pre>
+</li>
+
+<li>
+<p>安装<a href='http://cx4a.org/software/auto-complete/'>auto-complete</a><br />下载并解压</p>
+
+<pre><code> cd ~/.emacs.d
+ mkdir auto-complete</code></pre>
+
+<p>然后cd到auto-complete解压到的文件夹</p>
+
+<pre><code> make install DIR=$HOME/.emacs.d/auto-complete</code></pre>
+
+<p>安装成功后配置.emacs文件</p>
+
+<pre><code> (add-to-list &#39;load-path &quot;/home/gavin/.emacs.d/auto-complete&quot;)
+ (require &#39;auto-complete-config)
+ (add-to-list &#39;ac-dictionary-directories &quot;/home/gavin/.emacs.d/auto-complete/ac-dict&quot;)
+ (ac-config-default)</code></pre>
+</li>
+
+<li>
+<p>配置.emacs文件</p>
+
+<pre><code> ;; golang mode
+ (add-to-list &#39;load-path &quot;/home/gavin/.emacs.d&quot;)
+ (require &#39;go-mode-load)
+ (require &#39;go-autocomplete)</code></pre>
+</li>
+</ol>
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>
