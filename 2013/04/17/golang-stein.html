@@ -29,38 +29,40 @@
 <pre><code>package main
 
 func gcd(p, q int) int {
-	if p &lt; q {
-	    t := p
-	    p = q
-	    q = t
-	}
-	if q == 0 {
-	    return p
-	}
-	if p&amp;1 == 0 &amp;&amp; q&amp;1 == 0 {
-	    return gcd(p&gt;&gt;1, q&gt;&gt;1) &lt;&lt; 1
-	}
-	if p&amp;1 == 0 {
-	    return gcd(p&gt;&gt;1, q)
-	}
-	if q&amp;1 == 0 {
-	    return gcd(p, q&gt;&gt;1)
-	}
-	return gcd((p+q)&gt;&gt;1, (p-q)&gt;&gt;1)
+    if p &lt; q {
+        t := p
+        p = q
+        q = t
+    }
+    if q == 0 {
+        return p
+    }
+    if p&amp;1 == 0 &amp;&amp; q&amp;1 == 0 {
+        return gcd(p&gt;&gt;1, q&gt;&gt;1) &lt;&lt; 1
+    }
+    if p&amp;1 == 0 {
+        return gcd(p&gt;&gt;1, q)
+    }
+    if q&amp;1 == 0 {
+        return gcd(p, q&gt;&gt;1)
+    }
+    return gcd((p+q)&gt;&gt;1, (p-q)&gt;&gt;1)
     }
 
     func main() {
-	p, q := 3, 11
-	println(gcd(p, q))
-}</code></pre>
+    p, q := 3, 11
+    println(gcd(p, q))
+}
+</code></pre>
+
 </div>
 
 
             <div class="footer">
               <div class="contact">
                 <p>
-                  Your Name<br />
-                  What You Are<br />
+                  Gao Xu<br />
+                  Beijing<br />
                   blackdoor@yeah.net
                 </p>
               </div>

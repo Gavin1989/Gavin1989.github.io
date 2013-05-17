@@ -33,51 +33,54 @@
 // fibonacci is a function that returns
 // a function that returns an int.
 func fibonacci() func() int {
-	a, b := 0, 1
-	return func() int {
-	    a, b = b, a+b
-	    return a
-	}
+    a, b := 0, 1
+    return func() int {
+        a, b = b, a+b
+        return a
+    }
 }
 
 func main() {
-	f := fibonacci()
-	for i := 0; i &lt; 10; i++ {
-    	println(f())
-	}
-}</code></pre>
+    f := fibonacci()
+    for i := 0; i &lt; 10; i++ {
+        println(f())
+    }
+}
+</code></pre>
 
 <p>下面附上Java版，这里维护了一个数组：</p>
 
 <pre><code>package algs;
 
 public class Fibonacci {
-	private static long[] FN = new long[100];
-	
-	public static void main(String[] args) {
-		for(int i = 0; i &lt; 10; i++)	{
-			System.out.println(F(i));
-		}	
-	}
-	
-	private static long F(int N){
-		if(N == 0) return 0;
-		if(N == 1) {
-			FN[N] = 1;
-			return 1;
-		}
-		FN[N] = FN[N-1] + FN[N-2];
-		return FN[N];
-	}
-}</code></pre>
+    private static long[] FN = new long[100];
+
+    public static void main(String[] args) {
+        for(int i = 0; i &lt; 10; i++) {
+            System.out.println(F(i));
+        }   
+    }
+
+    private static long F(int N){
+        if(N == 0) return 0;
+        if(N == 1) {
+            FN[N] = 1;
+            return 1;
+        }
+        FN[N] = FN[N-1] + FN[N-2];
+        return FN[N];
+    }
+}
+</code></pre>
+
 </div>
 
 
             <div class="footer">
               <div class="contact">
                 <p>
-                  Your Name<br />
-                  What You Are<br />
+                  Gao Xu<br />
+                  Beijing<br />
                   blackdoor@yeah.net
                 </p>
               </div>

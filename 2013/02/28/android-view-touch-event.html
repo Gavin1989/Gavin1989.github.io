@@ -31,8 +31,8 @@
 <pre><code>public boolean dispatchTouchEvent(MotionEvent ev) {
     ...
     if (action == MotionEvent.ACTION_DOWN) {
-	...
-       	if (disallowIntercept || !onInterceptTouchEvent(ev)) {
+    ...
+        if (disallowIntercept || !onInterceptTouchEvent(ev)) {
             final View[] children = mChildren;
             final int count = mChildrenCount;
             for (int i = count - 1; i &gt;= 0; i--) {
@@ -58,39 +58,41 @@
     if (!disallowIntercept &amp;&amp; onInterceptTouchEvent(ev)) {
         ...
         if (!target.dispatchTouchEvent(ev)) {
-            // target didn&#39;t handle ACTION_CANCEL. not much we can do
+            // target didn't handle ACTION_CANCEL. not much we can do
             // but they should have.
         }
         // clear the target
         mMotionTarget = null;
-        // Don&#39;t dispatch this event to our own view, because we already
+        // Don't dispatch this event to our own view, because we already
         // saw it when intercepting; we just want to give the following
         // event to the normal onTouchEvent().
         return true;
     }
     ...
     return target.dispatchTouchEvent(ev);
-}</code></pre>
+}
+</code></pre>
 
 <p>根据以上代码可知，如果onInterceptTouchEvent方法返回true，会直接调用当前ViewGroup的onTouch方法，否则则会依次调用其内包含的子控件的dispatchTouchEvent方法。我写了一个测试用例，ViewGroup的onInterceptTouchEvent方法与所有View的onTouch方法都打了Log：</p>
 
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;org.gavin.test.view.MyScrollView xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    android:layout_width=&quot;fill_parent&quot;
-    android:layout_height=&quot;fill_parent&quot; &gt;
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;org.gavin.test.view.MyScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" &gt;
 
     &lt;org.gavin.test.view.MyLinearLayout
-        android:layout_width=&quot;fill_parent&quot;
-	android:layout_height=&quot;fill_parent&quot;
-	android:orientation=&quot;vertical&quot;&gt;
-	&lt;org.gavin.test.view.MyImageView
-	    android:layout_width=&quot;wrap_content&quot;
-	    android:layout_height=&quot;wrap_content&quot;
-	    android:src=&quot;@drawable/ic_launcher&quot;&gt;
+        android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"&gt;
+    &lt;org.gavin.test.view.MyImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher"&gt;
         &lt;/org.gavin.test.view.MyImageView&gt;
     &lt;/org.gavin.test.view.MyLinearLayout&gt;
 
-&lt;/org.gavin.test.view.MyScrollView&gt;</code></pre>
+&lt;/org.gavin.test.view.MyScrollView&gt;
+</code></pre>
 
 <p>Log信息：</p>
 
@@ -98,14 +100,16 @@
 I/MyLinearLayout(26001): onInterceptTouchEvent:MotionEvent{...}  
 I/MyImageView(26001): onTouchEvent:MotionEvent{...}  
 I/MyLinearLayout(26001): onTouchEvent:MotionEvent{...}  
-I/MyScrollView(26001): onTouchEvent:MotionEvent{...}</code></pre>
+I/MyScrollView(26001): onTouchEvent:MotionEvent{...}
+</code></pre>
 
 <p>如果MyLinearLayout的onInterceptTouchEvent方法返回true：</p>
 
 <pre><code>11-04 14:05:08.389: I/MyScrollView(26297): onInterceptTouchEvent:MotionEvent{...}  
 11-04 14:05:08.389: I/MyLinearLayout(26297): onInterceptTouchEvent:MotionEvent{...}  
 11-04 14:05:08.397: I/MyLinearLayout(26297): onTouchEvent:MotionEvent{...}  
-11-04 14:05:08.397: I/MyScrollView(26297): onTouchEvent:MotionEvent{...}</code></pre>
+11-04 14:05:08.397: I/MyScrollView(26297): onTouchEvent:MotionEvent{...}
+</code></pre>
 
 <p>OK，再看这段代码：</p>
 
@@ -113,21 +117,24 @@ I/MyScrollView(26001): onTouchEvent:MotionEvent{...}</code></pre>
     // Event handled, we have a target now.
     mMotionTarget = child;
     return true;
-}</code></pre>
+}
+</code></pre>
 
 <p>从这段代码可以看出，如果某个子控件的dispatchTouchEvent方法返回true，则中断以后的消息传递。并在下一个非ACTION_DOWN事件直接调用此子控件的dispatchTouchEvent方法。一个View的dispatchTouchEvent返回true，主要可能是onTouch方法返回true。如果我们把MyImageView的onTouchEvent返回值改为true：</p>
 
 <pre><code>I/MyScrollView(26393): onInterceptTouchEvent:MotionEvent{...}  
 /MyLinearLayout(26393): onInterceptTouchEvent:MotionEvent{...}  
-I/MyImageView(26393): onTouchEvent:MotionEvent{...}</code></pre>
+I/MyImageView(26393): onTouchEvent:MotionEvent{...}
+</code></pre>
+
 </div>
 
 
             <div class="footer">
               <div class="contact">
                 <p>
-                  Your Name<br />
-                  What You Are<br />
+                  Gao Xu<br />
+                  Beijing<br />
                   blackdoor@yeah.net
                 </p>
               </div>

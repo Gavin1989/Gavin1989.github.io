@@ -26,7 +26,7 @@
 <p class="meta">27 Apr 2013</p>
 
 <div id="post">
-<h2 id='session__flash'>Session / Flash域</h2>
+<h2>Session / Flash域</h2>
 
 <p>Revel提供两种基于Cookie的存储机制：</p>
 
@@ -39,54 +39,74 @@ type Session map[string]string
 // 它通常被用来实现成功或失败信息。
 // 例如Post/Redirect/Get模式: http://en.wikipedia.org/wiki/Post/Redirect/Get
 type Flash struct {
-	Data, Out map[string]string
-}</code></pre>
-
-<h2 id='session'>Session（会话）</h2>
-
-<p>在Revel中，Session的概念是一个string类型的map，存储为加密签名的Cookie。<br />这意味着：</p>
-
-<p>* 大小被限制为4kb。 * 所有的数据必须被串行化为一个string以用于存储。 * 用户可以查看所有的数据（未加密的），但修改是安全的。</p>
-
-<h2 id='flash'>Flash</h2>
-
-<p>Flash提供一次性的string存储。它在实现<a href='http://en.wikipedia.org/wiki/Post/Redirect/Get'>Post/Redirect/Post模式</a>或短暂的“操作成功！”或“操作失败！”信息时非常有用。<br />下面是这种用法的一个例子：</p>
-
-<pre><code>// 显示设置表格
-func (c App) ShowSettings() revel.Result {
-	return c.Render()
+    Data, Out map[string]string
 }
+</code></pre>
 
-// 处理一个请求
-func (c App) SaveSettings(setting string) revel.Result {
-	c.Validation.Required(setting)
-	if c.Validation.HasErrors() {
-		c.Flash.Error(&quot;Settings invalid!&quot;)
-		c.Validation.Keep()
-	    c.Params.Flash()
-		return c.Redirect(App.ShowSettings)
-	}
+<h2>Session（会话）</h2>
 
-	saveSetting(setting)
-	c.Flash.Success(&quot;Settings saved!&quot;)
-	return c.Redirect(App.ShowSettings)
-}</code></pre>
+<p>在Revel中，Session的概念是一个string类型的map，存储为加密签名的Cookie。<br/>
+这意味着：</p>
 
-<p>例子的来龙去脉：</p>
+<ul>
+<li>大小被限制为4kb。</li>
+<li>所有的数据必须被串行化为一个string以用于存储。</li>
+<li>用户可以查看所有的数据（未加密的），但修改是安全的。
 
-<p>1. 用户取得一个设置页面。 2. 用户提交一个设置（POST方式） 3. 应用处理这个请求，保存一个错误或成功信息到flash，并重定向到设置页面（REDIRECT方式）。 4. 用户取得设置页面，页面的模版显示flash中的信息。</p>
+<h2>Flash</h2>
+
+<p>Flash提供一次性的string存储。它在实现<a href="http://en.wikipedia.org/wiki/Post/Redirect/Get">Post/Redirect/Post模式</a>或短暂的“操作成功！”或“操作失败！”信息时非常有用。<br/>
+下面是这种用法的一个例子：</p>
+
+<p>  // 显示设置表格
+  func (c App) ShowSettings() revel.Result {
+      return c.Render()
+  }</p>
+
+<p>  // 处理一个请求
+  func (c App) SaveSettings(setting string) revel.Result {
+      c.Validation.Required(setting)
+      if c.Validation.HasErrors() {
+          c.Flash.Error("Settings invalid!")
+          c.Validation.Keep()
+          c.Params.Flash()
+          return c.Redirect(App.ShowSettings)
+      }</p>
+
+<pre><code>  saveSetting(setting)
+  c.Flash.Success("Settings saved!")
+  return c.Redirect(App.ShowSettings)
+</code></pre>
+
+<p>  }
+例子的来龙去脉：</p>
+
+<ol>
+<li>用户取得一个设置页面。</li>
+<li>用户提交一个设置（POST方式）</li>
+<li>应用处理这个请求，保存一个错误或成功信息到flash，并重定向到设置页面（REDIRECT方式）。</li>
+<li>用户取得设置页面，页面的模版显示flash中的信息。</li>
+</ol>
+</li>
+</ul>
+
 
 <p>它使用了两个便利的函数：</p>
 
-<p>1. Flash.Success(message string)是Flash.Out<span>“success”</span> = message的一个简便写法。 2. Flash.Error(message string)是Flash.Out<span>&#8220;error&#8221;</span> = message的一个简便写法。</p>
+<ol>
+<li> Flash.Success(message string)是Flash.Out[“success”] = message的一个简便写法。</li>
+<li> Flash.Error(message string)是Flash.Out["error"] = message的一个简便写法。</li>
+</ol>
+
+
 </div>
 
 
             <div class="footer">
               <div class="contact">
                 <p>
-                  Your Name<br />
-                  What You Are<br />
+                  Gao Xu<br />
+                  Beijing<br />
                   blackdoor@yeah.net
                 </p>
               </div>

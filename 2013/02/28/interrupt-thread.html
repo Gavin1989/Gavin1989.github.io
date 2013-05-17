@@ -26,7 +26,11 @@
 <p class="meta">28 Feb 2013</p>
 
 <div id="post">
-<p>本文的内容全部来自Core Java<br />当线程的run方法执行完最后一条语句并return，或者出现了在方法中未捕获的异常时，线程将终止。<br />interrupt()方法只是请求终止线程，当调用此方法时，线程的中断状态将被置位。每个线程都应该不时地检查这个标志，以判断线程是否被中断。<br />当在一个被阻塞的线程（调用sleep或者wait）上调用interrupted方法时，阻塞调用将会被InterruptedException中断。<br />没有任何一个语言方面的需求要求一个被中断的线程应该终止。中断一个线程不过是为了引起它的注意，被中断的线程可以决定如何响应中断。某些线程是如此重要以至于应该处理完异常后继续运行，而不是中断。更是，更普遍的情况是，线程将简单地将中断作为一个终止的请求。这种情况下线程的run方法具有如下形式：</p>
+<p>本文的内容全部来自Core Java<br/>
+当线程的run方法执行完最后一条语句并return，或者出现了在方法中未捕获的异常时，线程将终止。<br/>
+interrupt()方法只是请求终止线程，当调用此方法时，线程的中断状态将被置位。每个线程都应该不时地检查这个标志，以判断线程是否被中断。<br/>
+当在一个被阻塞的线程（调用sleep或者wait）上调用interrupted方法时，阻塞调用将会被InterruptedException中断。<br/>
+没有任何一个语言方面的需求要求一个被中断的线程应该终止。中断一个线程不过是为了引起它的注意，被中断的线程可以决定如何响应中断。某些线程是如此重要以至于应该处理完异常后继续运行，而不是中断。更是，更普遍的情况是，线程将简单地将中断作为一个终止的请求。这种情况下线程的run方法具有如下形式：</p>
 
 <pre><code>public void run(){
     try{
@@ -40,7 +44,8 @@
         cleanup,if required
     }
     //exiting the run method terminates the thread
-}</code></pre>
+}
+</code></pre>
 
 <p>如果在每次迭代之后都调用sleep方法（或者其它的可中断方法），isInterrupted检测就没有用处也没有必要。如果在中断状态被置位时调用sleep方法，它不会休眠。相反，它将清除这一状态并抛出InterruptedException。因此，如果你的循环调用sleep，不要检测中断状态，而是如下所示捕获InterruptedException：</p>
 
@@ -56,7 +61,8 @@
         cleanup,if required
     }
     //exiting the run method terminates the thread
-}</code></pre>
+}
+</code></pre>
 
 <p>有时候InterruptedException被抑制在很低的层次上，比如：</p>
 
@@ -65,10 +71,11 @@
     try{
         sleep(dalay);
     }catch(InterruptedException e){
-    
+
     }
     ...
-}</code></pre>
+}
+</code></pre>
 
 <p>这时候有一种更好的解决办法：</p>
 
@@ -79,7 +86,8 @@
     }catch(InterruptedException e){
         Thread.currentThread().interrupt();
     }
-}</code></pre>
+}
+</code></pre>
 
 <p>当然，最好的解决办法是：</p>
 
@@ -87,15 +95,17 @@
     …
     sleep(dalay);
     ...
-}</code></pre>
+}
+</code></pre>
+
 </div>
 
 
             <div class="footer">
               <div class="contact">
                 <p>
-                  Your Name<br />
-                  What You Are<br />
+                  Gao Xu<br />
+                  Beijing<br />
                   blackdoor@yeah.net
                 </p>
               </div>

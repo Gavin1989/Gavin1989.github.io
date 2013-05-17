@@ -26,52 +26,58 @@
 <p class="meta">24 Apr 2013</p>
 
 <div id="post">
-<h2 id='id48'>共享功能</h2>
+<h2>共享功能</h2>
 
 <p>Revel提供了在不同的域之间共享功能的途径：</p>
 
-<p>* actions * controllers * applications</p>
+<ul>
+<li>actions</li>
+<li>controllers</li>
+<li>applications
 
-<h2 id='actions'>Actions</h2>
+<h2>Actions</h2>
 
-<p>相关的actions共享一个单独的Controller类型。开发者可以为它添加数据域以便存储更多关于请求的上下文。拦截器可以在Revel运行前或后注册到Controller的任意action上。</p>
+相关的actions共享一个单独的Controller类型。开发者可以为它添加数据域以便存储更多关于请求的上下文。拦截器可以在Revel运行前或后注册到Controller的任意action上。
 
-<h2 id='controllers'>Controllers</h2>
+<h2>Controllers</h2>
 
-<p>Revel允许将Controller混合在一起以便跨越不同的Controller类型共享字段、方法以及拦截器。<br />下面是一个例子：</p>
+<p>Revel允许将Controller混合在一起以便跨越不同的Controller类型共享字段、方法以及拦截器。<br/>
+下面是一个例子：</p>
 
-<pre><code>// MongoController提供访问我们的MongoDB
-type MongoController struct {
-	*revel.Controller
-    Session *mgo.Session
-}
+<p>  // MongoController提供访问我们的MongoDB
+  type MongoController struct {
+      <em>revel.Controller
+      Session </em>mgo.Session
+  }</p>
 
-func (c *MongoController) Begin() revel.Result {
-	c.Session = ...
-}
+<p>  func (c *MongoController) Begin() revel.Result {
+      c.Session = ...
+  }</p>
 
-func init() {
-	revel.InterceptMethod((*MongoController).Begin, revel.BEFORE)
-}
+<p>  func init() {
+      revel.InterceptMethod((*MongoController).Begin, revel.BEFORE)
+  }</p>
 
-type AppController struct {
-	*revel.Controller
-    MongoController
-}</code></pre>
+<p>  type AppController struct {
+      <em>revel.Controller
+      MongoController
+  }
+在这个例子中，开发者创建了一个MongoController，它用来跨越整个应用，开发者可以将它混合到另外的Controller中。在这里，拦截器将会运行并且AppController上的action可以访问</em>mgo.Session。</p>
 
-<p>在这个例子中，开发者创建了一个MongoController，它用来跨越整个应用，开发者可以将它混合到另外的Controller中。在这里，拦截器将会运行并且AppController上的action可以访问<em>mgo.Session。</em></p>
+<h2>Application</h2>
 
-<h2 id='application'>Application</h2>
+<p>组件可以用来跨应用共享Controller类型、模板和资产。</p></li>
+</ul>
 
-<p>组件可以用来跨应用共享Controller类型、模板和资产。</p>
+
 </div>
 
 
             <div class="footer">
               <div class="contact">
                 <p>
-                  Your Name<br />
-                  What You Are<br />
+                  Gao Xu<br />
+                  Beijing<br />
                   blackdoor@yeah.net
                 </p>
               </div>
